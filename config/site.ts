@@ -10,7 +10,7 @@ export const siteConfig = {
     },
     {
       label: "냉장고를 부탁해",
-      href: "/myrefregirator",
+      href: "/myrefrigerator",
     },
     {
       label: "마이페이지",
@@ -30,7 +30,7 @@ export const siteConfig = {
     },
     {
       label: "냉장고를 부탁해",
-      href: "/myrefregirator",
+      href: "/myrefrigerator",
     },
     {
       label: "마이페이지",

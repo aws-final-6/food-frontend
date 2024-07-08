@@ -2,10 +2,15 @@
 
 const API_URL = process.env.API_URL;
 
-export async function updateBookmark(userId: string, recipeNo: number) {
+export async function updateBookmark(
+  userId: string,
+  accessToken: string,
+  recipeNo: number
+) {
   const favoriteInfo = {
     user_id: userId,
-    recipe_no: recipeNo,
+    access_token: accessToken,
+    recipe_id: recipeNo,
   };
   try {
     const response = await fetch(`${API_URL}/bookmark/updateBookmark`, {
@@ -25,10 +30,15 @@ export async function updateBookmark(userId: string, recipeNo: number) {
   }
 }
 
-export async function removeBookmark(userId: string, recipeNo: number) {
+export async function removeBookmark(
+  userId: string,
+  accessToken: string,
+  recipeNo: number
+) {
   const favoriteInfo = {
     user_id: userId,
-    recipe_no: recipeNo,
+    access_token: accessToken,
+    recipe_id: recipeNo,
   };
   try {
     const response = await fetch(`${API_URL}/bookmark/removeBookmark`, {

@@ -6,37 +6,42 @@ import { updateBookmark } from "./action";
 import { UserContext } from "@/providers/userProvider";
 
 interface IFavorite {
-  recipe_no: number;
+  recipe_id: number;
 }
-const FavoriteButton = ({ recipe_no }: IFavorite) => {
+const FavoriteButton = ({ recipe_id }: IFavorite) => {
   const { userData, addFavorite, removeFavorite, isUserDataEmpty } =
     useContext(UserContext);
   const [star, setStar] = useState(false);
 
   useEffect(() => {
-    if (
-      !isUserDataEmpty() &&
-      userData &&
-      userData[0].favorite.includes(recipe_no)
-    ) {
-      setStar(true);
+    if (!isUserDataEmpty() && userData && userData[0].favorite) {
+      if (userData[0].favorite.includes(recipe_id)) setStar(true);
     }
   });
 
   async function handleFavorite() {
+    console.log(recipe_id);
     if (star === false) {
-      const res = await updateBookmark(userData[0].id, recipe_no);
-      addFavorite(recipe_no);
+      const res = await updateBookmark(
+        userData[0].id,
+        userData[0].accessToken,
+        recipe_id
+      );
+      addFavorite(recipe_id);
     } else {
-      const res = await updateBookmark(userData[0].id, recipe_no);
-      removeFavorite(recipe_no);
+      const res = await updateBookmark(
+        userData[0].id,
+        userData[0].accessToken,
+        recipe_id
+      );
+      removeFavorite(recipe_id);
     }
     setStar(!star);
   }
   return (
     <div>
       <Button
-        key={recipe_no}
+        key={recipe_id}
         variant="bordered"
         isIconOnly
         color="warning"

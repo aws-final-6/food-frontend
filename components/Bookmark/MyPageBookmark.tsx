@@ -7,7 +7,7 @@ import FavoriteButton from "./FavoriteButton";
 
 interface IBookmark {
   _id: string;
-  recipe_no: string;
+  recipe_id: string;
   recipe_title: string;
 }
 const MyPageBookmark = () => {
@@ -25,14 +25,14 @@ const MyPageBookmark = () => {
     fetchData();
   }, []);
   return (
-    <Card>
+    <Card className="py-10 px-10">
       <CardBody className="flex flex-col gap-3">
         {bookmark.length === 0 ? (
           <p className="px-5 py-10 font-gaegu">즐겨찾기가 텅 비었어요!</p>
         ) : (
           bookmark.map((book) => (
-            <div key={book._id} className="flex flex-row gap-5">
-              <FavoriteButton recipe_no={Number(book.recipe_no)} />
+            <div key={book._id} className="flex flex-row gap-5 items-center">
+              <FavoriteButton recipe_id={Number(book.recipe_id)} />
               <p>{book.recipe_title}</p>
             </div>
           ))
