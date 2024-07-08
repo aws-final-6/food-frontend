@@ -34,7 +34,7 @@ export async function SearchIngredientAPI(keyword: string) {
   console.log(recipeName);
 
   try {
-    const response = await fetch(`${API_URL}/search/getIngSearchList`, {
+    const response = await fetch(`${API_URL}/search/getIngredientSearchList`, {
       method: "POST",
       body: JSON.stringify(recipeName),
       headers: {

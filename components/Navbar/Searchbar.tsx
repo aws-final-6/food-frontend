@@ -11,7 +11,7 @@ import { useRouter } from "next/navigation";
 import FilterButton from "./FilterButton";
 
 interface SearchResult {
-  recipe_no: number;
+  recipe_id: number;
   recipe_title: string;
   recipe_thumbnail: string;
 }
@@ -106,10 +106,10 @@ const Searchbar = () => {
             >
               {results.map((result) => (
                 <ListboxItem
-                  key={result.recipe_no}
+                  key={result.recipe_id}
                   className="p-4 border-b last:border-b-0"
                   onClick={() => {
-                    router.push(`/recipe/${result.recipe_no}`);
+                    router.push(`/recipe/${result.recipe_id}`);
                     setResults([]);
                   }}
                 >
