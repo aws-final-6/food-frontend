@@ -40,6 +40,10 @@ const nextConfig = {
         protocol: "https",
         hostname: "www.foodnuri.go.kr",
       },
+      {
+        protocol: "https",
+        hostname: "shop-phinf.pstatic.net",
+      },
     ],
   },
   eslint: {
