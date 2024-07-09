@@ -1,0 +1,46 @@
+version: 0.2
+
+phases:
+  install:
+    runtime-versions:
+      docker: 19
+    commands:
+      - echo Logging in to Amazon ECR...
+      - aws ecr get-login-password --region us-west-2 | docker login --username AWS --password-stdin ${{ secrets.ECR_REGISTRY }}
+
+  pre_build:
+    commands:
+      - echo Cloning repository...
+      - git clone https://x-access-token:${{ secrets.TOKEN_GITHUB }}@github.com/aws-final-6/GitOps_Repo.git
+      - cd GitOps_Repo
+      - echo Setting up yq...
+      - wget -qO ~/yq https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64
+      - chmod +x ~/yq
+      - ~/yq --version
+
+  build:
+    commands:
+      - echo Building the Docker image...
+      - docker build -t ${{ secrets.ECR_REGISTRY }}/mylittlerecipebook/mlr-prd-fe-img:${CODEBUILD_BUILD_NUMBER} -f Dockerfile .
+
+  post_build:
+    commands:
+      - echo Pushing the Docker image...
+      - docker push ${{ secrets.ECR_REGISTRY }}/mylittlerecipebook/mlr-prd-fe-img:${CODEBUILD_BUILD_NUMBER}
+      - echo Removing the local Docker image...
+      - docker rmi ${{ secrets.ECR_REGISTRY }}/mylittlerecipebook/mlr-prd-fe-img:${CODEBUILD_BUILD_NUMBER}
+      - echo Updating fe_deployment.yaml with the new image...
+      - cd GitOps_Repo
+      - ~/yq -i '.spec.template.spec.containers[0].image = "${{ secrets.ECR_REGISTRY }}/mylittlerecipebook/mlr-prd-fe-img:${CODEBUILD_BUILD_NUMBER}"' fe_deployment.yaml
+      - echo Configuring git user...
+      - git config --global user.email "${{ secrets.EMAIL_GITHUB }}"
+      - git config --global user.name "${{ secrets.USERNAME_GITHUB }}"
+      - echo Committing and pushing changes...
+      - git add fe_deployment.yaml
+      - git commit -m "Update image to ${{ secrets.ECR_REGISTRY }}/mylittlerecipebook/mlr-prd-fe-img:${CODEBUILD_BUILD_NUMBER}"
+      - git push https://x-access-token:${{ secrets.TOKEN_GITHUB }}@github.com/aws-final-6/GitOps_Repo.git
+
+artifacts:
+  files:
+    - '**/*'
+  discard-paths: yes
