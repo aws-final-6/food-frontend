@@ -2,24 +2,25 @@ import { Tooltip } from "@nextui-org/tooltip";
 import { Chip } from "@nextui-org/chip";
 import { CgSmartHomeRefrigerator, CgTrash, CgTimer } from "react-icons/cg";
 import clsx from "clsx";
+import { IIngredients } from "@/app/myrefrigerator/page";
+import { deleteNote } from "./action";
+import { UserContext } from "@/providers/userProvider";
+import { useContext } from "react";
+import { useRefrigeratorContext } from "@/app/myrefrigerator/provider";
 
-export interface CardProps {
-  refrigerator_ing_name: string;
-  expired_date: string;
-  enter_date: string;
-  color: string;
-}
-
-const StickyNote: React.FC<CardProps> = ({
+const StickyNote: React.FC<IIngredients> = ({
   refrigerator_ing_name,
   expired_date,
   enter_date,
   color,
+  refrigerator_ing_id,
 }) => {
-  function deleteCards(cardId: number) {
-    // setCards((pv) =>
-    //   pv.filter((c) => `ref_${c.refrigerator_id}` !== `ref_${cardId}`)
-    // );
+  const { userData } = useContext(UserContext);
+  const { setRefrig } = useRefrigeratorContext();
+
+  async function deleteCards(cardId: number) {
+    const data = await deleteNote(cardId, userData[0].id);
+    setRefrig(data);
   }
 
   return (
@@ -32,12 +33,12 @@ const StickyNote: React.FC<CardProps> = ({
       <div>
         <div className="flex flex-row justify-between">
           <p className="font-gaegu">{""}</p>
-          {/* <CgTrash
+          <CgTrash
             className="hover:text-red-500 hover:cursor-pointer z-10"
             onClick={() => {
               deleteCards(refrigerator_ing_id);
             }}
-          /> */}
+          />
         </div>
         <p className="font-gaegu">{refrigerator_ing_name}</p>
       </div>
