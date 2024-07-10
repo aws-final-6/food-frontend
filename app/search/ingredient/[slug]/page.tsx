@@ -15,7 +15,7 @@ interface IMeta {
 
 const page = async ({ params }: { params: { slug: string } }) => {
   const keyword = decodeURIComponent(params.slug);
-  const data = await SearchIngredientAPI(keyword);
+  const data = await SearchIngredientAPI(keyword, "page");
   //console.log(data);
   return (
     <>

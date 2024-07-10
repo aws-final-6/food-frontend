@@ -2,10 +2,10 @@
 
 const API_URL = process.env.API_URL;
 
-export async function SearchRecipeAPI(keyword: string) {
+export async function SearchRecipeAPI(keyword: string, type: string) {
   const recipeName = {
     keyword: keyword,
-    type: "navbar",
+    type: type,
   };
 
   try {
@@ -26,10 +26,10 @@ export async function SearchRecipeAPI(keyword: string) {
   }
 }
 
-export async function SearchIngredientAPI(keyword: string) {
+export async function SearchIngredientAPI(keyword: string, type: string) {
   const recipeName = {
     keyword: keyword,
-    type: "navbar",
+    type: type,
   };
   console.log(recipeName);
 
