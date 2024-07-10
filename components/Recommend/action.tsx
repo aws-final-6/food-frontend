@@ -1,6 +1,7 @@
 "use server";
 import { getRandomItems } from "@/utils/RandomGenerator";
 const API_URL = process.env.API_URL;
+const FAST_API_URL = process.env.FAST_API_URL;
 
 export async function getSeasonal() {
   const res = await fetch(`${API_URL}/recipe/getSeasonalList`);
@@ -48,4 +49,28 @@ export async function getToday() {
   const recipeList = await res.json();
 
   return getRandomItems(recipeList.recipes, 4);
+}
+
+export async function getVideoList() {
+  const res = await fetch(`${FAST_API_URL}/api/video/long`);
+
+  if (!res.ok) {
+    throw new Error("Failed to fetch data");
+  }
+
+  const videoList = await res.json();
+
+  return getRandomItems(videoList, 4);
+}
+
+export async function getShortsList() {
+  const res = await fetch(`${FAST_API_URL}/api/video/short`);
+
+  if (!res.ok) {
+    throw new Error("Failed to fetch data");
+  }
+
+  const videoList = await res.json();
+
+  return getRandomItems(videoList, 4);
 }
