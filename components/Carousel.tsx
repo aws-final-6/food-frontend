@@ -50,14 +50,14 @@ const Carousel = () => {
     <div className="relative h-[calc(100vh-80px)] overflow-hidden">
       <div
         className="w-full h-full flex transition-transform ease-in-out duration-1000"
-        style={{ transform: `translateX(-${current * 50}vw)` }}
+        style={{ transform: `translateX(-${current * 100}%)` }} // Updated to use percentage for full slide width
       >
-        {slides.map((slide, index) => (
+        {slides.map((slide) => (
           <div
-            className={`${slide.bg} w-screen h-full flex flex-col gap-16 xl:flex-row`}
+            className={`${slide.bg} w-full flex-shrink-0 h-full flex flex-col gap-16 xl:flex-row`} // Ensure each slide takes full width
             key={slide.id}
           >
-            <div className="h-1/2 xl:w-1/2 xl:h-full flex flex-col items-center justify-center gap-8 2xl:gap-12 text-center">
+            <div className="h-1/2 xl:w-full xl:h-full flex flex-col items-center justify-center gap-8 2xl:gap-12 text-center">
               <h2 className="text-xl lg:text-3xl 2xl:text-5xl">
                 {slide.description}
               </h2>
