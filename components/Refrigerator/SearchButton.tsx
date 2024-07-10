@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Button } from "@nextui-org/button";
 import { FaSearch } from "react-icons/fa";
 import {
@@ -18,54 +18,28 @@ import {
   TableColumn,
   TableRow,
 } from "@nextui-org/table";
-
-const data = [
-  {
-    refrig: {
-      refrigerator_id: 1,
-      refrigerator_name: "냉장고",
-      refrigerator_type: 1,
-    },
-    ingredients: [
-      {
-        refrigerator_id: 1,
-        refrigerator_ing_name: "감자",
-        enter_date: "2024-07-10",
-        expired_date: "2024-06-20",
-        refrigerator_ing_id: 1,
-        color: "norang",
-      },
-      {
-        refrigerator_id: 1,
-        refrigerator_ing_name: "당근",
-        enter_date: "2024-07-10",
-        expired_date: "2024-06-20",
-        refrigerator_ing_id: 2,
-        color: "norang",
-      },
-    ],
-  },
-  {
-    refrig: {
-      refrigerator_id: 2,
-      refrigerator_name: "냉동고",
-      refrigerator_type: 2,
-    },
-    ingredients: [
-      {
-        refrigerator_id: 2,
-        refrigerator_ing_name: "요구르트",
-        enter_date: "2024-07-10",
-        expired_date: "2024-06-20",
-        refrigerator_ing_id: 3,
-        color: "norang",
-      },
-    ],
-  },
-];
+import { useRefrigeratorContext } from "@/app/myrefrigerator/provider";
+import { getMultiSearch } from "./action";
 
 const SearchButton = () => {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
+  const { refrig } = useRefrigeratorContext();
+  const data = refrig?.refrigerators;
+
+  const [selectedIngredients, setSelectedIngredients] = useState<Set<string>>(
+    new Set()
+  );
+
+  function handleSelectionChange(selected: Set<string>) {
+    setSelectedIngredients(selected);
+  }
+
+  async function searchMultipleRecipe() {
+    const ingredientNames = Array.from(selectedIngredients);
+    console.log("Selected ingredients:", ingredientNames);
+    const res = await getMultiSearch(ingredientNames);
+    console.log(res);
+  }
 
   return (
     <div>
@@ -84,35 +58,60 @@ const SearchButton = () => {
               </ModalHeader>
               <ModalBody>
                 <Accordion selectionMode="multiple">
-                  {data.map((col) => (
-                    <AccordionItem
-                      key={col.refrig.refrigerator_id}
-                      aria-label={col.refrig.refrigerator_name}
-                      title={col.refrig.refrigerator_name}
-                    >
-                      <Table selectionMode="multiple" color="warning">
-                        <TableHeader>
-                          <TableColumn>NAME</TableColumn>
-                          <TableColumn>EXPIRED DATE</TableColumn>
-                        </TableHeader>
-                        <TableBody>
-                          {col.ingredients.map((ing) => (
-                            <TableRow key={ing.refrigerator_ing_id}>
-                              <TableCell>{ing.refrigerator_ing_name}</TableCell>
-                              <TableCell>{ing.expired_date}</TableCell>
-                            </TableRow>
-                          ))}
-                        </TableBody>
-                      </Table>
-                    </AccordionItem>
-                  ))}
+                  {data && data.length > 0 ? (
+                    data.map((col) => (
+                      <AccordionItem
+                        key={col.refrig.refrigerator_id}
+                        aria-label={`Refrigerator ${col.refrig.refrigerator_name}`}
+                        title={
+                          <div>
+                            {col.refrig.refrigerator_name}{" "}
+                            {col.ingredients.length}
+                          </div>
+                        }
+                      >
+                        <Table
+                          aria-label={`Ingredients in ${col.refrig.refrigerator_name}`}
+                          selectionMode="multiple"
+                          color="warning"
+                          selectedKeys={selectedIngredients}
+                          onSelectionChange={(keys) =>
+                            handleSelectionChange(keys as Set<string>)
+                          }
+                        >
+                          <TableHeader>
+                            <TableColumn>NAME</TableColumn>
+                            <TableColumn>EXPIRED DATE</TableColumn>
+                          </TableHeader>
+                          <TableBody>
+                            {col.ingredients.map((ing) => (
+                              <TableRow key={ing.refrigerator_ing_name}>
+                                <TableCell>
+                                  {ing.refrigerator_ing_name}
+                                </TableCell>
+                                <TableCell>{ing.expired_date}</TableCell>
+                              </TableRow>
+                            ))}
+                          </TableBody>
+                        </Table>
+                      </AccordionItem>
+                    ))
+                  ) : (
+                    <div>No data available</div>
+                  )}
                 </Accordion>
               </ModalBody>
               <ModalFooter>
                 <Button color="danger" variant="light" onPress={onClose}>
                   닫기
                 </Button>
-                <Button color="primary" onPress={onClose}>
+                <Button
+                  color="primary"
+                  onPress={() => {
+                    searchMultipleRecipe();
+                    onClose();
+                  }}
+                >
                   검색
                 </Button>
               </ModalFooter>

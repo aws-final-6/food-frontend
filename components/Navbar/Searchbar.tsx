@@ -28,8 +28,9 @@ const Searchbar = () => {
     setSearchTerm(value);
     let searchResult;
     if (value.length > 1) {
-      if (searchType) searchResult = await SearchRecipeAPI(value);
-      if (searchType === false) searchResult = await SearchIngredientAPI(value);
+      if (searchType) searchResult = await SearchRecipeAPI(value, "navbar");
+      if (searchType === false)
+        searchResult = await SearchIngredientAPI(value, "navbar");
       if (searchResult && searchResult.length >= 5)
         setResults(searchResult.slice(0, 5));
       else setResults(searchResult);
@@ -43,8 +44,9 @@ const Searchbar = () => {
     let searchResult;
     if (searchTerm.length > 1) {
       if (searchType === false)
-        searchResult = await SearchRecipeAPI(searchTerm);
-      if (searchType) searchResult = await SearchIngredientAPI(searchTerm);
+        searchResult = await SearchRecipeAPI(searchTerm, "navbar");
+      if (searchType)
+        searchResult = await SearchIngredientAPI(searchTerm, "navbar");
       if (searchResult && searchResult.length >= 5)
         setResults(searchResult.slice(0, 5));
       else setResults(searchResult);
@@ -79,6 +81,8 @@ const Searchbar = () => {
         value={searchTerm}
       />
       <Button
+        variant="flat"
+        color="primary"
         onClick={() => {
           searchType
             ? router.push(`/search/recipe/${searchTerm}`)
@@ -86,6 +90,7 @@ const Searchbar = () => {
           setSearchTerm("");
           setResults([]);
         }}
+        disabled={searchTerm.length <= 1}
       >
         검색
       </Button>

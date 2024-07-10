@@ -13,9 +13,11 @@ import { refrigType } from "../refigType";
 import { Select, SelectItem } from "@nextui-org/select";
 import { UserContext } from "@/providers/userProvider";
 import { addRefrigerator } from "./action";
+import { useRefrigeratorContext } from "@/app/myrefrigerator/provider";
 
 const AddRefrigButton = () => {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
+  const { setRefrig } = useRefrigeratorContext();
   const [rName, setRName] = useState("");
   const [rType, setRType] = useState("냉장");
 
@@ -28,7 +30,7 @@ const AddRefrigButton = () => {
     formdata.append("refrig_name", rName);
     formdata.append("user_id", userData[0].id);
     const res = await addRefrigerator(formdata);
-    console.log(res);
+    setRefrig(res);
   }
 
   return (
