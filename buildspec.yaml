@@ -3,49 +3,37 @@ version: 0.2
 phases:
   install:
     commands:
+      - echo Setting up kubectl...
+      - curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+      - chmod +x kubectl
+      - mv kubectl /usr/local/bin/
       - echo Logging in to Amazon ECR in Seoul region...
       - aws ecr get-login-password --region ap-northeast-2 | docker login --username AWS --password-stdin ${ECR_REGISTRY}
 
   pre_build:
     commands:
-      - echo Cloning repository...
-      - git clone https://x-access-token:${TOKEN_GITHUB}@github.com/aws-final-6/food-frontend.git
-      - cd food-frontend
-      - echo Setting up yq...
-      - wget -qO ~/yq https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64
-      - chmod +x ~/yq
-      - ~/yq --version
+      - echo Verifying AWS CLI credentials...
+      - aws sts get-caller-identity
+      - echo Verifying EKS cluster access...
+      - aws eks describe-cluster --region ap-northeast-2 --name mlr-prd-eks-cls
+      - echo Setting up kubeconfig...
+      - aws eks --region ap-northeast-2 update-kubeconfig --name mlr-prd-eks-cls || { echo 'kubeconfig update failed' ; exit 1; }
+      - echo "Kubeconfig file contents:"
+      - cat ~/.kube/config
 
   build:
     commands:
-      - echo Building the Docker image...
-      - docker build -t ${ECR_REGISTRY}/mylittlerecipebook/mlr-prd-fe-img:${CODEBUILD_BUILD_NUMBER} -f Dockerfile .
-      - echo "Docker build completed"
-      - docker images
+      - echo Cloning GitOps repository...
+      - git clone https://x-access-token:${TOKEN_GITHUB}@github.com/aws-final-6/food-frontend.git
+      - cd food-frontend
+      - echo "Updating fe_deployment.yaml with new image..."
+      - sed -i "s|761278642645.dkr.ecr.ap-northeast-2.amazonaws.com/mylittlerecipebook/mlr-prd-fe-img:[^ ]*|761278642645.dkr.ecr.ap-northeast-2.amazonaws.com/mylittlerecipebook/mlr-prd-fe-img:${IMAGE_TAG}|g" fe_deployment.yaml
+      - echo "Applying changes to Kubernetes..."
+      - kubectl apply -f .
 
   post_build:
     commands:
-      - echo Tagging the Docker image...
-      - docker tag ${ECR_REGISTRY}/mylittlerecipebook/mlr-prd-fe-img:${CODEBUILD_BUILD_NUMBER} ${ECR_REGISTRY}/mylittlerecipebook/mlr-prd-fe-img:latest
-      - echo "Docker image tagged"
-      - echo Pushing the Docker image to Seoul region ECR...
-      - docker push ${ECR_REGISTRY}/mylittlerecipebook/mlr-prd-fe-img:${CODEBUILD_BUILD_NUMBER}
-      - docker push ${ECR_REGISTRY}/mylittlerecipebook/mlr-prd-fe-img:latest
-      - echo "Docker push completed"
-      # - echo Updating be_nod_deployment.yaml with the new image...
-      # - cd food-frontend
-      # - ~/yq -i '.spec.template.spec.containers[0].image = "${ECR_REGISTRY}/mylittlerecipebook/mlr-prd-fe-img:${CODEBUILD_BUILD_NUMBER}"' fe_nod_deployment.yaml
-      # - echo Configuring git user...
-      # - git config --global user.email "${EMAIL_GITHUB}"
-      # - git config --global user.name "${USERNAME_GITHUB}"
-      # - echo Committing and pushing changes...
-      # - git add fe_nod_deployment.yaml
-      # - git commit -m "Update image to ${ECR_REGISTRY}/mylittlerecipebook/mlr-prd-fe-img:${CODEBUILD_BUILD_NUMBER}"
-      # - git push https://x-access-token:${TOKEN_GITHUB}@github.com/aws-final-6/food-frontend.git
-      # - echo Deploying to EKS...
-      # - aws eks --region us-east-1 update-kubeconfig --name MLR-PRD-EKS-CLS
-      # - kubectl create secret docker-registry regcred --docker-server=${ECR_REGISTRY} --docker-username=AWS --docker-password=$(aws ecr get-login-password --region ap-northeast-2) --namespace=default
-      # - kubectl apply -f fe_nod_deployment.yaml
+      - echo Deployment completed.
 
 artifacts:
   files:
