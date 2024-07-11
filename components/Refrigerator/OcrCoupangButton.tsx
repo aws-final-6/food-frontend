@@ -6,7 +6,8 @@ import { Autocomplete, AutocompleteItem } from "@nextui-org/autocomplete";
 import { useRefrigeratorContext } from "@/app/myrefrigerator/provider";
 import { Input } from "@nextui-org/input";
 import { UserContext } from "@/providers/userProvider";
-
+import { Accordion, AccordionItem } from "@nextui-org/accordion";
+import Image from "next/image";
 const OcrCoupangButton = () => {
   const { getRefrigInfo, setRefrig } = useRefrigeratorContext();
   const refrigColname = getRefrigInfo();
@@ -79,8 +80,29 @@ const OcrCoupangButton = () => {
   }
 
   return (
-    <div className="flex flex-col gap-3 pb-5 items-center justify-center">
-      <div className="flex flex-col gap-5 p-10">
+    <div className="flex flex-col gap-3 pb-5 justify-center items-center">
+      <Accordion className="w-full">
+        <AccordionItem
+          key="1"
+          aria-label="Accordion 1"
+          title="쿠팡 주문내역 OCR 사용법"
+          className="border-b-3 border-b-sub"
+        >
+          <div className="grid-cols-2 grid items-center">
+            <Image
+              src="/sample/coupang_sample.png"
+              alt="sample ocr test image for coupang"
+              width={300}
+              height={300}
+            />
+            <p className="text-2xl">
+              모바일폰으로 쿠팡앱으로 주문내역 들어가서 화면을 옆에 사진처럼
+              캡쳐해서 올려주세요!{" "}
+            </p>
+          </div>
+        </AccordionItem>
+      </Accordion>
+      <div className="flex flex-col gap-5 p-10 ">
         <input
           type="file"
           accept="image/*"
@@ -99,7 +121,10 @@ const OcrCoupangButton = () => {
       {ingredients.length > 0 && (
         <div>
           {ingredients.map((ingredient, index) => (
-            <div className="grid grid-cols-4 gap-5 py-2" key={index}>
+            <div
+              className="grid grid-cols-4 sm:grid-cols-2 gap-5 py-2"
+              key={index}
+            >
               <Input
                 type="text"
                 name="name"
