@@ -8,6 +8,7 @@ import { FaSquare } from "react-icons/fa";
 import { useRefrigeratorContext } from "@/app/myrefrigerator/provider";
 import { UserContext } from "@/providers/userProvider";
 import { addNote } from "./action";
+import { clsx } from "clsx";
 
 const AddFoodManual = () => {
   const { getRefrigInfo, refrig, setRefrig } = useRefrigeratorContext();
@@ -100,7 +101,9 @@ const AddFoodManual = () => {
           <Button
             key={i}
             isIconOnly
-            className={`${co.bgcolor} ${co.txtcolor}`}
+            className={clsx(`${co.bgcolor} ${co.txtcolor}`, {
+              "border-black border-4": color === co.bgcolor,
+            })}
             onClick={() => setColor(co.bgcolor)}
             name="color"
             value={co.bgcolor}

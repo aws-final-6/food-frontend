@@ -4,24 +4,42 @@ import { motion, useAnimation } from "framer-motion";
 import Image from "next/image";
 
 const logos = [
-  { src: "/team/DaPanDa_logo.png", url: "https://dapanda.com" },
-  { src: "/team/InterviewMaster_logo.png", url: "https://mlr.com" },
-  { src: "/team/MyLittleRecipeBook_logo.png", url: "https://adv.com" },
-  { src: "/team/PlaceHolder_logo.png", url: "https://adv.com" },
-  { src: "/team/QuickCatch_logo.png", url: "https://adv.com" },
-  { src: "/team/SPOID_logo.png", url: "https://adv.com" },
-  { src: "/team/DaPanDa_logo.png", url: "https://dapanda.com" },
-  { src: "/team/InterviewMaster_logo.png", url: "https://mlr.com" },
-  { src: "/team/MyLittleRecipeBook_logo.png", url: "https://adv.com" },
-  { src: "/team/PlaceHolder_logo.png", url: "https://adv.com" },
-  { src: "/team/QuickCatch_logo.png", url: "https://adv.com" },
-  { src: "/team/SPOID_logo.png", url: "https://adv.com" },
-  { src: "/team/DaPanDa_logo.png", url: "https://dapanda.com" },
-  { src: "/team/InterviewMaster_logo.png", url: "https://mlr.com" },
-  { src: "/team/MyLittleRecipeBook_logo.png", url: "https://adv.com" },
-  { src: "/team/PlaceHolder_logo.png", url: "https://adv.com" },
-  { src: "/team/QuickCatch_logo.png", url: "https://adv.com" },
-  { src: "/team/SPOID_logo.png", url: "https://adv.com" },
+  { src: "/team/SPOID_logo.png", url: "https://www.spoid.shop/" },
+  {
+    src: "/team/InterviewMaster_logo.png",
+    url: "https://www.interviewmaster.store/",
+  },
+  { src: "/team/DaPanDa_logo.png", url: "https://awscloudschool.online/" },
+  { src: "/team/QuickCatch_logo.png", url: "https://quickcatch.store/" },
+  { src: "/team/PlaceHolder_logo.png", url: "https://placeholder-web.shop/" },
+  {
+    src: "/team/MyLittleRecipeBook_logo.png",
+    url: "https://book.mylittle.recipes/",
+  },
+  { src: "/team/SPOID_logo.png", url: "https://www.spoid.shop/" },
+  {
+    src: "/team/InterviewMaster_logo.png",
+    url: "https://www.interviewmaster.store/",
+  },
+  { src: "/team/DaPanDa_logo.png", url: "https://awscloudschool.online/" },
+  { src: "/team/QuickCatch_logo.png", url: "https://quickcatch.store/" },
+  { src: "/team/PlaceHolder_logo.png", url: "https://placeholder-web.shop/" },
+  {
+    src: "/team/MyLittleRecipeBook_logo.png",
+    url: "https://book.mylittle.recipes/",
+  },
+  { src: "/team/SPOID_logo.png", url: "https://www.spoid.shop/" },
+  {
+    src: "/team/InterviewMaster_logo.png",
+    url: "https://www.interviewmaster.store/",
+  },
+  { src: "/team/DaPanDa_logo.png", url: "https://awscloudschool.online/" },
+  { src: "/team/QuickCatch_logo.png", url: "https://quickcatch.store/" },
+  { src: "/team/PlaceHolder_logo.png", url: "https://placeholder-web.shop/" },
+  {
+    src: "/team/MyLittleRecipeBook_logo.png",
+    url: "https://book.mylittle.recipes/",
+  },
 ];
 
 const SlidingLogos: React.FC = () => {

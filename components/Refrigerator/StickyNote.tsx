@@ -7,6 +7,7 @@ import { deleteNote } from "./action";
 import { UserContext } from "@/providers/userProvider";
 import { useContext } from "react";
 import { useRefrigeratorContext } from "@/app/myrefrigerator/provider";
+import dayjs from "dayjs";
 
 const StickyNote: React.FC<IIngredients> = ({
   refrigerator_ing_name,
@@ -23,11 +24,20 @@ const StickyNote: React.FC<IIngredients> = ({
     setRefrig(data);
   }
 
+  const expiredDate = dayjs(expired_date);
+  const today = dayjs();
+  const diffDays = expiredDate.diff(today, "day");
+
   return (
     <div
       className={clsx(
         `rounded border w-42 h-40 p-5 flex flex-col justify-between`,
-        color
+        color,
+        {
+          "border-3 border-red animate-flash-red": diffDays <= 0,
+          "border-3 border-orange animate-flash-orange":
+            diffDays > 0 && diffDays < 7,
+        }
       )}
     >
       <div>

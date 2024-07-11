@@ -6,6 +6,8 @@ import { Autocomplete, AutocompleteItem } from "@nextui-org/autocomplete";
 import { useRefrigeratorContext } from "@/app/myrefrigerator/provider";
 import { Input } from "@nextui-org/input";
 import { UserContext } from "@/providers/userProvider";
+import { Accordion, AccordionItem } from "@nextui-org/accordion";
+import Image from "next/image";
 
 const OcrNaverButton = (onClose: any) => {
   const { getRefrigInfo, setRefrig } = useRefrigeratorContext();
@@ -78,7 +80,34 @@ const OcrNaverButton = (onClose: any) => {
   }
 
   return (
-    <div className="flex flex-col gap-3 pb-5 items-center justify-center">
+    <div className="flex flex-col gap-3 pb-5 justify-center items-center">
+      <Accordion className="w-full">
+        <AccordionItem
+          key="1"
+          aria-label="Accordion 1"
+          title="네이버 쇼핑 주문내역 OCR 사용법"
+          className="border-b-3 border-b-sub"
+        >
+          <div className="grid-cols-3 grid items-center">
+            <Image
+              src="/sample/naver_sample1.jpg"
+              alt="sample ocr test image for coupang"
+              width={300}
+              height={300}
+            />
+            <Image
+              src="/sample/naver_sample2.jpg"
+              alt="sample ocr test image for coupang"
+              width={300}
+              height={300}
+            />
+            <p className="text-2xl">
+              모바일/웹 에서 네이버 쇼핑 주문내역 또는 장바구니를 캡쳐해주세요.
+              NPay로 지불한 내역들만 인식 가능합니다.
+            </p>
+          </div>
+        </AccordionItem>
+      </Accordion>
       <div className="flex flex-col gap-5 p-10">
         <input
           type="file"

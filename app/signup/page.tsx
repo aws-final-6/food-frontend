@@ -29,11 +29,11 @@ const SignUppage = () => {
   const { userData } = useContext(UserContext);
   const router = useRouter();
 
-  useLayoutEffect(() => {
-    if (userData.length === 0) {
-      notFound();
-    }
-  }, []);
+  // useLayoutEffect(() => {
+  //   if (userData.length === 0) {
+  //     notFound();
+  //   }
+  // }, []);
 
   async function hanldeSignupButton(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -46,7 +46,8 @@ const SignUppage = () => {
     formdata.append("provider", userData[0].provider);
     formdata.append("access_token", userData[0].accessToken);
     const data = await SignupAPI(formdata);
-    if (data === 201) router.push("/");
+    console.log("User Signup result", data);
+    router.push("/");
   }
 
   return (

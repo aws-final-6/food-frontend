@@ -10,16 +10,19 @@ export const colorOptions = [
     txtcolor: "text-mint dark:text-mintdark",
   },
   {
-    bgcolor: "bg-yeondoo bg-yeondoodark",
-    txtcolor: "text-yeondoo text-yeondoodark",
+    bgcolor: "bg-yeondoo dark:bg-yeondoodark",
+    txtcolor: "text-yeondoo dark:text-yeondoodark",
   },
   {
-    bgcolor: "bg-haneul bg-haneuldark",
-    txtcolor: "text-haneul text-haneuldark",
+    bgcolor: "bg-haneul dark:bg-haneuldark",
+    txtcolor: "text-haneul dark:text-haneuldark",
   },
-  { bgcolor: "bg-bora bg-boradark", txtcolor: "text-bora text-boradark" },
   {
-    bgcolor: "bg-boonhong bg-boonhongdark",
-    txtcolor: "text-boonhong text-boonhongdark",
+    bgcolor: "bg-bora dark:bg-boradark",
+    txtcolor: "text-bora dark:text-boradark",
+  },
+  {
+    bgcolor: "bg-boonhong dark:bg-boonhongdark",
+    txtcolor: "text-boonhong dark:text-boonhongdark",
   },
 ];

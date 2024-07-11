@@ -8,7 +8,8 @@ import FavoriteButton from "@/components/Bookmark/FavoriteButton";
 import ShoppingButton from "@/components/Button/ShoppingButton";
 import Timer from "@/components/Button/Timer";
 import BookmarkButton from "@/components/Button/BookmarkButton";
-interface IIngredient {
+import NutritionInfo from "@/components/NutritionInfo";
+export interface IIngredient {
   ingredient: string;
   amount: string;
 }
@@ -41,6 +42,7 @@ const RecipePage = async ({ params }: { params: { id: number } }) => {
           </div>
         </CardHeader>
         <CardBody className="flex flex-col justify-center items-center gap-10">
+          <NutritionInfo ingredients={data.recipeIngredient} />
           <div className="w-1/2">
             <p className={subtitle()}>재료</p>
             <div className="grid grid-cols-3 border-main border-4 border-dashed">
