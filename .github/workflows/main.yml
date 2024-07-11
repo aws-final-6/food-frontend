@@ -65,14 +65,14 @@ jobs:
         git commit -m "Update image to 192.168.56.200/mylittlerecipebook/mlr-dev-fe-img:${{ github.run_number }}"
         git push https://x-access-token:${{ secrets.TOKEN_GITHUB }}@github.com/aws-final-6/GitOps_Repo.git develop
 
-#  - name: action-slack
-#    uses: 8398a7/action-slack@v3
-#    with:
-#      status: ${{ job.status }}
-#      author_name: Build MLR Frontend
-#      fields: repo,message,commit,author,action,eventName,ref,workflow,job,took
-#      github_token: ${{ secrets.TOKEN_GITHUB }}
-#    env:
-#      SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
-#      GITHUB_TOKEN: ${{ secrets.TOKEN_GITHUB }}
-#    if: always()
+  - name: action-slack
+    uses: 8398a7/action-slack@v3
+    with:
+      status: ${{ job.status }}
+      author_name: Build MLR Frontend
+      fields: repo,message,commit,author,action,eventName,ref,workflow,job,took
+      github_token: ${{ secrets.TOKEN_GITHUB }}
+    env:
+      SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+      GITHUB_TOKEN: ${{ secrets.TOKEN_GITHUB }}
+    if: always()
