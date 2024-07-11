@@ -34,7 +34,7 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.TOKEN_GITHUB }}
       run: |
-        git clone https://x-access-token:${{ secrets.TOKEN_GITHUB }}@github.com/aws-final-6/GitOps_Repo.git
+        git clone --branch develop https://x-access-token:${{ secrets.TOKEN_GITHUB }}@github.com/aws-final-6/GitOps_Repo.git
         
     - name: Install yq without sudo
       run: |
@@ -60,25 +60,19 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.TOKEN_GITHUB }}
       run: |
-        tree
         cd GitOps_Repo
-        tree
-        echo "cd gitops-repo"
-        git status
         git add fe_deployment.yaml
-        echo "git add fe_deployment.yaml"
         git commit -m "Update image to 192.168.56.200/mylittlerecipebook/mlr-dev-fe-img:${{ github.run_number }}"
-        echo "git commit"
-        git push https://x-access-token:${{ secrets.TOKEN_GITHUB }}@github.com/aws-final-6/GitOps_Repo.git
+        git push https://x-access-token:${{ secrets.TOKEN_GITHUB }}@github.com/aws-final-6/GitOps_Repo.git develop
 
-  #  - name: action-slack
- #     uses: 8398a7/action-slack@v3
- #     with:
- #       status: ${{ job.status }}
- #       author_name: Build MLR Frontend
- #       fields: repo,message,commit,author,action,eventName,ref,workflow,job,took
- #       github_token: ${{ secrets.TOKEN_GITHUB }}
- #     env:
- #       SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
- #       GITHUB_TOKEN: ${{ secrets.TOKEN_GITHUB }}
- #     if: always()
+#  - name: action-slack
+#    uses: 8398a7/action-slack@v3
+#    with:
+#      status: ${{ job.status }}
+#      author_name: Build MLR Frontend
+#      fields: repo,message,commit,author,action,eventName,ref,workflow,job,took
+#      github_token: ${{ secrets.TOKEN_GITHUB }}
+#    env:
+#      SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+#      GITHUB_TOKEN: ${{ secrets.TOKEN_GITHUB }}
+#    if: always()
