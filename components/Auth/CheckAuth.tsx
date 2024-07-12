@@ -46,11 +46,11 @@ const CheckAuth = () => {
 
     if (user_id && access_token && refresh_token) {
       fetchDataAndSetUserData(user_id, access_token);
-      // if (is_new == "true") {
-      //   router.push("/signup");
-      // } else {
-      //   router.push("/");
-      // }
+      if (is_new == "true") {
+        router.push("/signup");
+      } else {
+        router.push("/");
+      }
     }
   }, []);
 
