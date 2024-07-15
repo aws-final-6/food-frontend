@@ -17,10 +17,12 @@ const CheckAuth = () => {
   const is_new = searchParams.get("new");
 
   useEffect(() => {
-    const fetchDataAndSetUserData = async (userId: string) => {
+    const fetchDataAndSetUserData = async (
+      userId: string,
+      access_token: string
+    ) => {
       try {
         if (is_new === "true") {
-          router.push("/signup");
           updateUserData({
             id: userId,
             accessToken: access_token || "",
@@ -28,13 +30,13 @@ const CheckAuth = () => {
             favorite: [],
           });
         } else {
-          const favorite = await getBookmark(userId);
-          router.push("/");
+          const favorite = await getBookmark(userId, access_token);
+          console.log("favorite", favorite);
           updateUserData({
             id: userId,
             accessToken: access_token || "",
             refreshToken: refresh_token || "",
-            favorite: favorite,
+            favorite: favorite.user_bookmark,
           });
         }
       } catch (error) {
@@ -43,7 +45,7 @@ const CheckAuth = () => {
     };
 
     if (user_id && access_token && refresh_token) {
-      fetchDataAndSetUserData(user_id);
+      fetchDataAndSetUserData(user_id, access_token);
       if (is_new == "true") {
         router.push("/signup");
       } else {

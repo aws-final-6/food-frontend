@@ -59,6 +59,7 @@ const AddFoodButton = () => {
         isOpen={isOpen}
         onOpenChange={onOpenChange}
         isDismissable={false}
+        scrollBehavior={"inside"}
         size="5xl"
       >
         <ModalContent>

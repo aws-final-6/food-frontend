@@ -1,6 +1,6 @@
 "use client";
+import React, { useState } from "react";
 import { Button } from "@nextui-org/button";
-import React from "react";
 import { AiFillFilter } from "react-icons/ai";
 import {
   Modal,
@@ -10,26 +10,39 @@ import {
   ModalFooter,
   useDisclosure,
 } from "@nextui-org/modal";
-import { Autocomplete, AutocompleteItem } from "@nextui-org/autocomplete";
 import { Tooltip } from "@nextui-org/tooltip";
 import { FaRegQuestionCircle } from "react-icons/fa";
+import { Input } from "@nextui-org/input";
+import { Chip } from "@nextui-org/chip";
+import { useRouter } from "next/navigation";
 
-const ingredient = [
-  {
-    ingredient_id: 1,
-    ingredient_name: "감자",
-  },
-  {
-    ingredient_id: 2,
-    ingredient_name: "계란",
-  },
-  {
-    ingredient_id: 3,
-    ingredient_name: "바나나",
-  },
-];
-const FilterButton = () => {
+const FilterButton: React.FC = () => {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
+  const [foodName, setFoodName] = useState<string>("");
+  const [ingredientToAdd, setIngredientToAdd] = useState<string>("");
+  const [dislikedIngredients, setDislikedIngredients] = useState<string[]>([]);
+  const router = useRouter();
+
+  const addIngredient = (): void => {
+    if (ingredientToAdd && dislikedIngredients.length < 5) {
+      setDislikedIngredients([...dislikedIngredients, ingredientToAdd]);
+      setIngredientToAdd("");
+    }
+  };
+
+  const removeIngredient = (index: number): void => {
+    setDislikedIngredients(dislikedIngredients.filter((_, i) => i !== index));
+  };
+
+  const handleSearch = () => {
+    const params = new URLSearchParams();
+    params.append("foodName", foodName);
+    dislikedIngredients.forEach((ingredient, index) => {
+      params.append(`dislikedIngredient${index + 1}`, ingredient);
+    });
+    router.push(`/search/filtered?${params.toString()}`);
+  };
+
   return (
     <div>
       <Button isIconOnly onPress={onOpen}>
@@ -44,25 +57,17 @@ const FilterButton = () => {
               </ModalHeader>
               <ModalBody>
                 <div className="flex flex-row gap-1 items-center justify-center">
-                  <Autocomplete
-                    defaultItems={ingredient}
-                    label="재료 검색"
-                    placeholder="재료를 검색해주세요"
-                    className="max-w-xs"
-                  >
-                    {(ingredient) => (
-                      <AutocompleteItem key={ingredient.ingredient_id}>
-                        {ingredient.ingredient_name}
-                      </AutocompleteItem>
-                    )}
-                  </Autocomplete>
-                  <Button variant="flat" color="warning" size="lg">
-                    추가
-                  </Button>
+                  <Input
+                    placeholder="음식 이름"
+                    label="음식"
+                    value={foodName}
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                      setFoodName(e.target.value)
+                    }
+                  />
                 </div>
                 <div className="flex flex-row gap-1 items-center">
-                  <p className="p-5 font-jua">먹기 싫어요 (최대 5개)</p>
-                  <Button>저장</Button>
+                  <p className="p-5 font-jua">빼고 싶어요 (최대 5개)</p>
                   <Tooltip content="먹기 싫은 아이템은 저장해둘 수 있습니다.">
                     <Button isIconOnly variant="light">
                       <FaRegQuestionCircle />
@@ -71,29 +76,48 @@ const FilterButton = () => {
                 </div>
 
                 <div className="flex flex-row gap-1 items-center justify-center">
-                  <Autocomplete
-                    defaultItems={ingredient}
-                    label="재료 검색"
-                    placeholder="재료 이름을 입력해주세요"
-                    className="max-w-xs"
+                  <Input
+                    label="필터링 할 음식"
+                    placeholder="음식 재료 검색"
+                    value={ingredientToAdd}
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                      setIngredientToAdd(e.target.value)
+                    }
+                  />
+                  <Button
+                    variant="flat"
+                    color="warning"
+                    size="lg"
+                    onPress={addIngredient}
+                    isDisabled={dislikedIngredients.length >= 5}
                   >
-                    {(ingredient) => (
-                      <AutocompleteItem key={ingredient.ingredient_id}>
-                        {ingredient.ingredient_name}
-                      </AutocompleteItem>
-                    )}
-                  </Autocomplete>
-                  <Button variant="flat" color="warning" size="lg">
                     추가
                   </Button>
                 </div>
-                <p className="p-5 font-jua">여러개 검색 (최대 5개)</p>
+
+                <div className="flex flex-wrap gap-2 mt-4">
+                  {dislikedIngredients.map((ingredient, index) => (
+                    <Chip
+                      key={index}
+                      onClose={() => removeIngredient(index)}
+                      variant="flat"
+                    >
+                      {ingredient}
+                    </Chip>
+                  ))}
+                </div>
               </ModalBody>
               <ModalFooter>
                 <Button color="danger" variant="light" onPress={onClose}>
                   닫기
                 </Button>
-                <Button color="primary" onPress={onClose}>
+                <Button
+                  color="primary"
+                  onPress={() => {
+                    handleSearch();
+                    onClose();
+                  }}
+                >
                   검색
                 </Button>
               </ModalFooter>

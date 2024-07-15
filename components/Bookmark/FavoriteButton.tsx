@@ -15,7 +15,7 @@ const FavoriteButton = ({ recipe_id }: IFavorite) => {
 
   useEffect(() => {
     if (!isUserDataEmpty() && userData && userData[0].favorite) {
-      if (userData[0].favorite.includes(recipe_id)) setStar(true);
+      if (userData[0].favorite.includes(Number(recipe_id))) setStar(true);
     }
   });
 

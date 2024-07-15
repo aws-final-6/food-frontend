@@ -1,3 +1,4 @@
+"use client";
 import React, { useState } from "react";
 import { Button } from "@nextui-org/button";
 import { FaSearch } from "react-icons/fa";
@@ -20,7 +21,14 @@ import {
 } from "@nextui-org/table";
 import { useRefrigeratorContext } from "@/app/myrefrigerator/provider";
 import { getMultiSearch } from "./action";
-
+import { Card, CardBody, CardHeader } from "@nextui-org/card";
+import RecipeButton from "../Recommend/RecipeButton";
+import Image from "next/image";
+interface IMeta {
+  recipe_id: number;
+  recipe_title: string;
+  recipe_thumbnail: string;
+}
 const SearchButton = () => {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const { refrig } = useRefrigeratorContext();
@@ -29,6 +37,8 @@ const SearchButton = () => {
   const [selectedIngredients, setSelectedIngredients] = useState<Set<string>>(
     new Set()
   );
+  const [searchResults, setSearchResults] = useState<IMeta[]>([]);
+  const [isResultModalOpen, setIsResultModalOpen] = useState(false);
 
   function handleSelectionChange(selected: Set<string>) {
     setSelectedIngredients(selected);
@@ -38,9 +48,11 @@ const SearchButton = () => {
     const ingredientNames = Array.from(selectedIngredients);
     console.log("Selected ingredients:", ingredientNames);
     const res = await getMultiSearch(ingredientNames);
-    console.log(res);
+    if (res.message && res.message == "일치하는 재료가 없습니다.")
+      setSearchResults([]);
+    else setSearchResults(res.search_list);
+    setIsResultModalOpen(true);
   }
-
   return (
     <div>
       <Button
@@ -109,10 +121,59 @@ const SearchButton = () => {
                   color="primary"
                   onPress={() => {
                     searchMultipleRecipe();
-                    onClose();
                   }}
                 >
                   검색
+                </Button>
+              </ModalFooter>
+            </>
+          )}
+        </ModalContent>
+      </Modal>
+      <Modal
+        isOpen={isResultModalOpen}
+        onOpenChange={(open) => setIsResultModalOpen(open)}
+        size="3xl"
+        scrollBehavior="inside"
+      >
+        <ModalContent>
+          {(onClose) => (
+            <>
+              <ModalHeader className="flex flex-col gap-1 font-jua text-3xl my-5">
+                검색 결과
+              </ModalHeader>
+              <ModalBody>
+                {searchResults && searchResults.length === 0 ? (
+                  <div className="text-center py-10 text-xl font-jua">
+                    텅 비었네요
+                  </div>
+                ) : (
+                  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 p-4">
+                    {searchResults.map((food, i) => (
+                      <Card key={i} className="py-4" isPressable>
+                        <CardHeader className="pb-0 pt-2 px-4 flex-col">
+                          <h4 className="font-bold text-large">
+                            {food.recipe_title}
+                          </h4>
+                        </CardHeader>
+                        <CardBody className="overflow-visible py-2 flex items-center">
+                          <Image
+                            alt={food.recipe_title}
+                            className="object-cover rounded-xl"
+                            src={food.recipe_thumbnail}
+                            width={200}
+                            height={200}
+                          />
+                        </CardBody>
+                        <RecipeButton recipe_no={food.recipe_id} />
+                      </Card>
+                    ))}
+                  </div>
+                )}
+              </ModalBody>
+              <ModalFooter>
+                <Button color="danger" variant="light" onPress={onClose}>
+                  닫기
                 </Button>
               </ModalFooter>
             </>

@@ -36,6 +36,20 @@ module.exports = {
         boonhong: "#EEBBCD",
         boonhongdark: "#BA446C",
       },
+      animation: {
+        "flash-red": "flash-red 1s infinite",
+        "flash-orange": "flash-orange 1s infinite",
+      },
+      keyframes: {
+        "flash-red": {
+          "0%, 100%": { borderColor: "red" },
+          "50%": { borderColor: "#ffcccc" },
+        },
+        "flash-orange": {
+          "0%, 100%": { borderColor: "orange" },
+          "50%": { borderColor: "#ffd700" },
+        },
+      },
     },
   },
   darkMode: "class",
