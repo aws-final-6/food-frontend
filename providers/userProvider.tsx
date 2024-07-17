@@ -1,12 +1,7 @@
 "use client";
 
-import React, {
-  createContext,
-  useState,
-  useCallback,
-  ReactNode,
-  useEffect,
-} from "react";
+import React, { createContext, useState, ReactNode, useEffect } from "react";
+import { LogoutAPI } from "./action";
 
 interface IUserData {
   id: string;
@@ -15,18 +10,21 @@ interface IUserData {
   provider: string;
   refreshToken: string;
   accessToken: string;
-  favorite: number[];
+  cate_no: number;
+  situ_no: number;
 }
 
 interface IUserContext {
-  userData: IUserData[];
-  setUserData: (data: IUserData[]) => void;
+  userData: IUserData | null;
+  favorite: number[];
+  setUserData: (data: IUserData) => void;
   clearUserData: () => void;
-  isUserDataEmpty: () => boolean;
   updateProvider: (newProvider: string) => void;
   updateUserData: (newData: Partial<IUserData>) => void;
+  setFavorite: (item: number[]) => void;
   addFavorite: (item: number) => void;
   removeFavorite: (item: number) => void;
+  clearFavorites: () => void;
 }
 
 interface UserProviderProps {
@@ -34,20 +32,29 @@ interface UserProviderProps {
 }
 
 export const UserContext = createContext<IUserContext>({
-  userData: [],
-  setUserData: () => [],
-  isUserDataEmpty: () => true,
-  clearUserData: () => [],
-  updateProvider: () => [],
-  updateUserData: () => [],
-  addFavorite: () => [],
-  removeFavorite: () => [],
+  userData: null,
+  favorite: [],
+  setUserData: () => {},
+  clearUserData: () => {},
+  updateProvider: () => {},
+  updateUserData: () => {},
+  setFavorite: () => {},
+  addFavorite: () => {},
+  removeFavorite: () => {},
+  clearFavorites: () => {},
 });
 
 export const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
-  const [userData, setUserData] = useState<IUserData[]>(() => {
+  const [userData, setUserData] = useState<IUserData | null>(() => {
     if (typeof window !== "undefined") {
       const localData = localStorage.getItem("userData");
+      return localData ? JSON.parse(localData) : null;
+    }
+    return null;
+  });
+  const [favorite, setFavorite] = useState<number[]>(() => {
+    if (typeof window !== "undefined") {
+      const localData = localStorage.getItem("favorite");
       return localData ? JSON.parse(localData) : [];
     }
     return [];
@@ -56,71 +63,84 @@ export const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
 
   useEffect(() => {
     if (typeof window !== "undefined") {
-      localStorage.setItem("userData", JSON.stringify(userData));
-      setIsInitialized(true);
+      if (userData) {
+        localStorage.setItem("userData", JSON.stringify(userData));
+      } else {
+        localStorage.removeItem("userData");
+      }
     }
   }, [userData]);
 
-  const isUserDataEmpty = useCallback(() => userData.length === 0, [userData]);
-
-  const clearUserData = () => {
+  useEffect(() => {
     if (typeof window !== "undefined") {
+      localStorage.setItem("favorite", JSON.stringify(favorite));
+      setIsInitialized(true);
+    }
+  }, [favorite]);
+
+  const clearUserData = async () => {
+    if (typeof window !== "undefined") {
+      setFavorite([]);
+      setUserData(null);
       localStorage.removeItem("userData");
-      setUserData([]);
+      localStorage.removeItem("favorite");
+
+      if (userData) {
+        const res = await LogoutAPI(
+          userData.provider,
+          userData.id,
+          userData.accessToken
+        );
+      }
+    }
+  };
+
+  const clearFavorites = () => {
+    if (typeof window !== "undefined") {
+      localStorage.removeItem("favorite");
+      setFavorite([]);
     }
   };
 
   const updateProvider = (newProvider: string) => {
-    if (userData.length > 0) {
-      const updatedData = [...userData];
-      updatedData[0].provider = newProvider;
+    if (userData) {
+      const updatedData = { ...userData, provider: newProvider };
       setUserData(updatedData);
     } else {
-      setUserData([{ provider: newProvider } as IUserData]);
+      setUserData({ provider: newProvider } as IUserData);
     }
   };
 
   const updateUserData = (newData: Partial<IUserData>) => {
-    if (userData.length > 0) {
-      const updatedData = { ...userData[0], ...newData };
-      setUserData([updatedData]);
+    if (userData) {
+      const updatedData = { ...userData, ...newData };
+      setUserData(updatedData);
     } else {
-      setUserData([{ ...newData } as IUserData]);
+      setUserData(newData as IUserData);
     }
   };
 
   const addFavorite = (item: number) => {
-    if (userData.length > 0) {
-      const updatedData = [...userData];
-      if (!Array.isArray(updatedData[0].favorite)) {
-        updatedData[0].favorite = [];
-      }
-      updatedData[0].favorite.push(item);
-      setUserData(updatedData);
-    }
+    setFavorite((prevFavorites) => [...prevFavorites, item]);
   };
 
   const removeFavorite = (item: number) => {
-    if (userData.length > 0) {
-      const updatedData = [...userData];
-      updatedData[0].favorite = updatedData[0].favorite.filter(
-        (fav) => fav !== item
-      );
-      setUserData(updatedData);
-    }
+    setFavorite((prevFavorites) => prevFavorites.filter((fav) => fav !== item));
   };
 
   return (
     <UserContext.Provider
       value={{
         userData,
+        favorite,
         setUserData,
-        isUserDataEmpty,
+        setFavorite,
         clearUserData,
         updateProvider,
         updateUserData,
-        removeFavorite,
         addFavorite,
+        removeFavorite,
+        clearFavorites,
       }}
     >
       {isInitialized ? children : null}

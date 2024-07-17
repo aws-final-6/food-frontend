@@ -9,9 +9,11 @@ import { useRefrigeratorContext } from "@/app/myrefrigerator/provider";
 import { UserContext } from "@/providers/userProvider";
 import { addNote } from "./action";
 import { clsx } from "clsx";
+import { useAlert } from "../Alert";
 
 const AddFoodManual = () => {
   const { getRefrigInfo, refrig, setRefrig } = useRefrigeratorContext();
+  const { showAlert, AlertComponent } = useAlert();
   const refrigColname = getRefrigInfo();
 
   const [name, setName] = useState("");
@@ -40,8 +42,11 @@ const AddFoodManual = () => {
         refrigerator_id: parseInt(colname, 10),
       },
     ];
-    const newData = await addNote(userData[0].id, newNote);
-    setRefrig(newData);
+    if (userData) {
+      const newData = await addNote(userData.id, newNote);
+      setRefrig(newData);
+      showAlert("냉장고를 부탁해", "노트가 추가 되었습니다!");
+    }
   }
 
   return (
@@ -112,9 +117,15 @@ const AddFoodManual = () => {
           </Button>
         ))}
       </div>
-      <Button variant="flat" color="warning" onClick={addSingleNote}>
+      <Button
+        variant="flat"
+        color="warning"
+        onClick={addSingleNote}
+        disabled={!name}
+      >
         노트 추가
       </Button>
+      <AlertComponent />
     </div>
   );
 };

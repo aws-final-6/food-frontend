@@ -1,5 +1,15 @@
 "use server";
+import { errLog, infoLog, successLog } from "@/utils/Logger";
+
 const API_URL = process.env.API_URL;
+
+/**
+ * **AUTH_08**
+ *
+ * API Path: /auth/signup
+ *
+ * 회원가입
+ */
 
 export async function SignupAPI(formData: FormData) {
   const userInfo = {
@@ -16,7 +26,9 @@ export async function SignupAPI(formData: FormData) {
     ],
     access_token: formData.get("access_token"),
   };
-  //console.log(userInfo);
+
+  infoLog("AUTH_08", userInfo);
+
   try {
     const response = await fetch(`${API_URL}/auth/signup`, {
       method: "POST",
@@ -26,11 +38,12 @@ export async function SignupAPI(formData: FormData) {
       },
     });
 
-    const responseData = response.status;
-    //console.log(responseData);
-    return responseData;
+    const responseData = await response.json();
+    successLog("AUTH_08", response.status, responseData);
+
+    return response.status;
   } catch (error) {
-    console.error("AUTH_08 Error:", error);
+    errLog("AUTH_08 Error:", error);
     return "회원가입 실패했습니다.";
   }
 }

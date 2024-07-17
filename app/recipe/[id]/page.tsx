@@ -1,4 +1,5 @@
-import React from "react";
+"use client";
+import React, { useState, useEffect, useContext } from "react";
 import { Card, CardHeader, CardBody } from "@nextui-org/card";
 import Image from "next/image";
 import { subtitle } from "@/components/primitives";
@@ -9,6 +10,8 @@ import ShoppingButton from "@/components/Button/ShoppingButton";
 import Timer from "@/components/Button/Timer";
 import BookmarkButton from "@/components/Button/BookmarkButton";
 import NutritionInfo from "@/components/NutritionInfo";
+import { UserContext } from "@/providers/userProvider";
+
 export interface IIngredient {
   ingredient: string;
   amount: string;
@@ -19,9 +22,21 @@ interface IInstruction {
   image: string;
 }
 
-const RecipePage = async ({ params }: { params: { id: number } }) => {
+const RecipePage = ({ params }: { params: { id: number } }) => {
+  const { userData } = useContext(UserContext);
+  const [data, setData] = useState<any>(null);
   const recipe_id = params.id;
-  const data = await getRecipe(recipe_id);
+
+  useEffect(() => {
+    const fetchRecipe = async () => {
+      const recipeData = await getRecipe(recipe_id);
+      setData(recipeData);
+    };
+
+    fetchRecipe();
+  }, [recipe_id]);
+
+  if (!data) return <div>Loading...</div>;
 
   return (
     <div>
@@ -37,8 +52,14 @@ const RecipePage = async ({ params }: { params: { id: number } }) => {
 
           <h2 className="font-jua text-3xl">{data.name}</h2>
           <div className="flex flex-row items-center justify-center gap-3">
-            즐겨찾기 추가
-            <FavoriteButton recipe_id={Number(data.recipe_id)} />
+            {userData && userData.nickname ? (
+              <>
+                <p>즐겨찾기 추가</p>
+                <FavoriteButton recipe_id={Number(data.recipe_id)} />
+              </>
+            ) : (
+              <></>
+            )}
           </div>
         </CardHeader>
         <CardBody className="flex flex-col justify-center items-center gap-10">
@@ -76,7 +97,7 @@ const RecipePage = async ({ params }: { params: { id: number } }) => {
       <div className="fixed bottom-20 right-20 flex flex-col gap-3 items-start justify-center z-30 w-40">
         <Timer />
         <ShoppingButton ingredients={data.recipeIngredient} />
-        <BookmarkButton />
+        {userData && userData.nickname ? <BookmarkButton /> : <></>}
       </div>
     </div>
   );

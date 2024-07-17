@@ -4,7 +4,6 @@ const BEDROCK_URL = process.env.BEDROCK_API_URL;
 
 export async function getRecipe(id: number) {
   const res = await fetch(`${API_URL}/recipe/getRecipe/${id}`);
-  //console.log(res);
 
   if (!res.ok) {
     throw new Error("Failed to fetch data");
@@ -33,7 +32,6 @@ export async function getNutrition(inglist: string[], serving: number) {
     );
 
     const responseData = await response.json();
-    //console.log(responseData);
     return responseData.body.text;
   } catch (error) {
     console.error("Error:", error);

@@ -20,8 +20,10 @@ const StickyNote: React.FC<IIngredients> = ({
   const { setRefrig } = useRefrigeratorContext();
 
   async function deleteCards(cardId: number) {
-    const data = await deleteNote(cardId, userData[0].id);
-    setRefrig(data);
+    if (userData) {
+      const data = await deleteNote(cardId, userData.id);
+      setRefrig(data);
+    }
   }
 
   const expiredDate = dayjs(expired_date);

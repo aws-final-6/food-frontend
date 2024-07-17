@@ -19,8 +19,7 @@ const BookmarkButton = () => {
       <Button
         onPress={onOpen}
         size="lg"
-        variant="flat"
-        color="warning"
+        color="primary"
         startContent={<FaRegStar />}
       >
         즐겨찾기

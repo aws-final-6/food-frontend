@@ -1,22 +1,44 @@
 "use client";
-import React, { useContext } from "react";
+import React, { useContext, useEffect, useLayoutEffect, useState } from "react";
 import { Button } from "@nextui-org/button";
 import { Card, CardBody } from "@nextui-org/card";
 import Image from "next/image";
 import { useTheme } from "next-themes";
 import { KakaoLogo, NaverLogo, GoogleLogo } from "../icons";
-import { LoginAPI } from "./action";
+import { checkSession, LoginAPI } from "./action";
 import { useRouter } from "next/navigation";
 import { UserContext } from "@/providers/userProvider";
 
 const OAuthButton = () => {
   const { theme } = useTheme();
   const router = useRouter();
-  const { updateProvider } = useContext(UserContext);
-  async function handleLoginButton(provider: string) {
-    updateProvider(provider);
-    //console.log(provider);
-    const data = await LoginAPI(provider);
+  const { userData, clearUserData } = useContext(UserContext);
+  const [userAgent, setUserAgent] = useState("");
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      setUserAgent(navigator.userAgent);
+      // console.log(navigator.userAgent);
+    }
+  }, []);
+
+  useLayoutEffect(() => {
+    const fetchData = async () => {
+      if (userData) {
+        const res = await checkSession(
+          userData.provider,
+          userData.id,
+          userData.accessToken
+        );
+        if (res !== 200) {
+          clearUserData();
+        }
+      }
+    };
+    fetchData();
+  }, []);
+  async function handleLoginButton(provider: string, userAgent: any) {
+    const data = await LoginAPI(provider, userAgent);
 
     router.push(data);
   }
@@ -37,7 +59,7 @@ const OAuthButton = () => {
           variant="shadow"
           className="bg-kakao"
           startContent={<KakaoLogo className="w-5" />}
-          onClick={() => handleLoginButton("kakao")}
+          onClick={() => handleLoginButton("kakao", userAgent)}
         >
           카카오로 로그인
         </Button>
@@ -45,7 +67,7 @@ const OAuthButton = () => {
           variant="shadow"
           className="bg-naver text-white"
           startContent={<NaverLogo />}
-          onClick={() => handleLoginButton("naver")}
+          onClick={() => handleLoginButton("naver", userAgent)}
         >
           네이버로 로그인
         </Button>
@@ -53,7 +75,7 @@ const OAuthButton = () => {
           variant="shadow"
           className=" bg-slate-100"
           startContent={<GoogleLogo />}
-          onClick={() => handleLoginButton("google")}
+          onClick={() => handleLoginButton("google", userAgent)}
         >
           구글로 로그인
         </Button>

@@ -69,7 +69,6 @@ const NutritionInfo: React.FC<NutritionInfoProps> = ({ ingredients }) => {
       const parsedIngredients = parseIngredients(ingredients);
       const nutrition = await getNutrition(parsedIngredients, 1);
       const nutritionString = nutrition.replace(/'/g, '"');
-      console.log(JSON.parse(nutritionString));
       setNutritionData(JSON.parse(nutritionString));
     };
 

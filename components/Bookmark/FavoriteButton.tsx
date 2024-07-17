@@ -9,34 +9,35 @@ interface IFavorite {
   recipe_id: number;
 }
 const FavoriteButton = ({ recipe_id }: IFavorite) => {
-  const { userData, addFavorite, removeFavorite, isUserDataEmpty } =
+  const { userData, addFavorite, removeFavorite, favorite } =
     useContext(UserContext);
   const [star, setStar] = useState(false);
 
   useEffect(() => {
-    if (!isUserDataEmpty() && userData && userData[0].favorite) {
-      if (userData[0].favorite.includes(Number(recipe_id))) setStar(true);
+    if (userData && userData.nickname && favorite) {
+      if (favorite.includes(recipe_id)) setStar(true);
     }
   });
 
   async function handleFavorite() {
-    console.log(recipe_id);
-    if (star === false) {
-      const res = await updateBookmark(
-        userData[0].id,
-        userData[0].accessToken,
-        recipe_id
-      );
-      addFavorite(recipe_id);
-    } else {
-      const res = await updateBookmark(
-        userData[0].id,
-        userData[0].accessToken,
-        recipe_id
-      );
-      removeFavorite(recipe_id);
+    if (userData && userData.nickname) {
+      if (star === false) {
+        const res = await updateBookmark(
+          userData.id,
+          userData.accessToken,
+          recipe_id
+        );
+        addFavorite(recipe_id);
+      } else {
+        const res = await updateBookmark(
+          userData.id,
+          userData.accessToken,
+          recipe_id
+        );
+        removeFavorite(recipe_id);
+      }
+      setStar(!star);
     }
-    setStar(!star);
   }
   return (
     <div>

@@ -31,7 +31,6 @@ export async function SearchIngredientAPI(keyword: string, type: string) {
     keyword: keyword,
     type: type,
   };
-  console.log(recipeName);
 
   try {
     const response = await fetch(`${API_URL}/search/getIngredientSearchList`, {

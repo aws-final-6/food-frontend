@@ -46,7 +46,7 @@ const SearchButton = () => {
 
   async function searchMultipleRecipe() {
     const ingredientNames = Array.from(selectedIngredients);
-    console.log("Selected ingredients:", ingredientNames);
+
     const res = await getMultiSearch(ingredientNames);
     if (res.message && res.message == "일치하는 재료가 없습니다.")
       setSearchResults([]);

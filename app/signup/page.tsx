@@ -18,37 +18,61 @@ import { UserContext } from "@/providers/userProvider";
 import { SignupAPI } from "./action";
 import { notFound, useRouter } from "next/navigation";
 import { cate_tags, situ_tags } from "@/components/tagData";
+import { useAlert } from "@/components/Alert";
 
 const SignUppage = () => {
   const { theme } = useTheme();
-  const [email, setEmail] = useState("");
   const [nickname, setNickname] = useState("");
   const [cateTag, setCateTag] = useState<number | null>(null);
   const [situTag, setSituTag] = useState<number | null>(null);
   const [subscribe, setSubscribe] = useState(false);
-  const { userData } = useContext(UserContext);
+  const { userData, updateUserData } = useContext(UserContext);
   const router = useRouter();
+  const { showAlert, AlertComponent } = useAlert();
 
-  // useLayoutEffect(() => {
-  //   if (userData.length === 0) {
-  //     notFound();
-  //   }
-  // }, []);
+  useLayoutEffect(() => {
+    if (!userData) {
+      notFound();
+    }
+  }, []);
 
   async function hanldeSignupButton(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const formdata = new FormData(event.currentTarget);
+    formdata.append("nickname", nickname);
     formdata.append("subscription", subscribe.toString());
     if (cateTag) formdata.append("prefer_cate", cateTag.toString());
     if (situTag) formdata.append("prefer_situ", situTag.toString());
-
-    formdata.append("id", userData[0].id);
-    formdata.append("provider", userData[0].provider);
-    formdata.append("access_token", userData[0].accessToken);
+    if (userData) {
+      formdata.append("id", userData.id);
+      formdata.append("provider", userData.provider);
+      formdata.append("access_token", userData.accessToken);
+      formdata.append("email", userData.email);
+    }
     const data = await SignupAPI(formdata);
-    console.log("User Signup result", data);
-    router.push("/");
+    if (data == 200 && cateTag && situTag) {
+      updateUserData({
+        nickname: nickname,
+        cate_no: cateTag,
+        situ_no: situTag,
+      });
+      router.push("/");
+    } else if (data == 409) {
+      showAlert(
+        "회원가입",
+        "다른 소셜 로그인으로 회원가입을 이미 하셨네요.",
+        "로그인",
+        "/login"
+      );
+    } else {
+      showAlert(
+        "회원가입",
+        "회원가입에 실패했습니다. 고객센터로 연락 부탁드립니다."
+      );
+    }
   }
+
+  const isSignupDisabled = !nickname || cateTag === null || situTag === null;
 
   return (
     <div className="flex flex-1 justify-center items-center">
@@ -73,9 +97,8 @@ const SignUppage = () => {
               name="email"
               label="이메일"
               w-full
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              isRequired
+              value={userData?.email}
+              isDisabled
             />
             <Input
               type="text"
@@ -83,6 +106,7 @@ const SignUppage = () => {
               name="nickname"
               w-full
               value={nickname}
+              maxLength={15}
               onChange={(e) => setNickname(e.target.value)}
               isRequired
             />
@@ -93,7 +117,7 @@ const SignUppage = () => {
                   <Chip
                     key={tag.id}
                     className={clsx(
-                      "m-1 hover:bg-orange-500 dark:text-subdark",
+                      "m-1 hover:bg-orange-500 dark:text-subdark cursor-pointer",
                       {
                         "bg-orange-900": cateTag === tag.id,
                         "text-white dark:text-white": cateTag === tag.id,
@@ -114,7 +138,7 @@ const SignUppage = () => {
                   <Chip
                     key={tag.id}
                     className={clsx(
-                      "m-1 hover:bg-yellow-500 dark:text-subdark",
+                      "m-1 hover:bg-yellow-500 dark:text-subdark cursor-pointer",
                       {
                         "bg-yellow-700": situTag === tag.id,
                         "text-white dark:text-white": situTag === tag.id,
@@ -143,12 +167,14 @@ const SignUppage = () => {
               variant="flat"
               size="lg"
               type="submit"
+              isDisabled={isSignupDisabled}
             >
               회원가입
             </Button>
           </CardFooter>
         </form>
       </Card>
+      <AlertComponent />
     </div>
   );
 };

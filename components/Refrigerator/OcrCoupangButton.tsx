@@ -66,11 +66,12 @@ const OcrCoupangButton = () => {
       color: ingredient.color,
       refrigerator_id: parseInt(ingredient.colname, 10),
     }));
-    console.log("new ingredients", newIngredients);
-    const newData = await addNote(userData[0].id, newIngredients);
-    setRefrig(newData);
+
+    if (userData) {
+      const newData = await addNote(userData.id, newIngredients);
+      setRefrig(newData);
+    }
     //addMultipleIngredients(newIngredients);
-    console.log(newIngredients);
   }
 
   function handleIngredientChange(index: number, field: string, value: string) {

@@ -7,32 +7,66 @@ import { Button } from "@nextui-org/button";
 import { getPrefered } from "./action";
 import { UserContext } from "@/providers/userProvider";
 import RecipeButton from "./RecipeButton";
+import Link from "next/link";
+
 interface IPrefer {
   recipe_id: number;
   recipe_title: string;
   recipe_thumbnail: string;
 }
+
 const UserRecommend = () => {
-  const { userData, isUserDataEmpty } = useContext(UserContext);
-  const [data, setData] = useState<IPrefer[]>([]);
+  const { userData } = useContext(UserContext);
+  const [data, setData] = useState<IPrefer[] | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchData = async () => {
-      const result = await getPrefered(userData[0].id, userData[0].accessToken);
-      setData(result);
+      try {
+        if (userData && userData.nickname) {
+          setIsLoading(true);
+          const result = await getPrefered(userData.id, userData.accessToken);
+          if (Array.isArray(result)) {
+            setData(result);
+          } else {
+            setError("이건가");
+          }
+        }
+      } catch (err) {
+        setError("테스트");
+      } finally {
+        setIsLoading(false);
+      }
     };
-    if (!isUserDataEmpty()) {
-      fetchData();
-    }
-  }, []);
 
-  if (data.length == 0)
+    fetchData();
+  }, [userData]);
+
+  if (!userData) {
     return (
-      <div className="flex flex-col gap-3">
-        <p>오늘의 요리를 보시려면 로그인해주세요!</p>
-        <Button className="bg-sub">로그인</Button>
+      <div className="flex flex-col gap-3 ">
+        <p className="font-jua">오늘의 요리를 보시려면 로그인해주세요!</p>
+        <Link href="/login">
+          <Button className="bg-sub w-full" size="lg">
+            로그인
+          </Button>
+        </Link>
       </div>
     );
+  }
+
+  if (isLoading) {
+    return <p>Loading...</p>;
+  }
+
+  if (error) {
+    return <p>Error: {error}</p>;
+  }
+
+  if (!data || data.length === 0) {
+    return <p>추천 레시피가 없습니다.</p>;
+  }
 
   return (
     <>

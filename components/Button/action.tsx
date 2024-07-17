@@ -16,7 +16,7 @@ export async function getShoppingList(ingredientName: string) {
     });
 
     const responseData = await response.json();
-    console.log(responseData);
+
     return responseData;
   } catch (error) {
     console.error("Error:", error);
