@@ -20,8 +20,10 @@ const StickyNote: React.FC<IIngredients> = ({
   const { setRefrig } = useRefrigeratorContext();
 
   async function deleteCards(cardId: number) {
-    const data = await deleteNote(cardId, userData[0].id);
-    setRefrig(data);
+    if (userData) {
+      const data = await deleteNote(cardId, userData.id);
+      setRefrig(data);
+    }
   }
 
   const expiredDate = dayjs(expired_date);
@@ -52,7 +54,7 @@ const StickyNote: React.FC<IIngredients> = ({
         </div>
         <p className="font-gaegu">{refrigerator_ing_name}</p>
       </div>
-      <div className="flex flex-row gap-1/12 w-33 justify-center items-center">
+      <div className="flex md:flex-row flex-col gap-1/12 w-33 justify-center items-center">
         <Tooltip key={refrigerator_ing_name} content={"냉장고에 넣은 날"}>
           <Chip
             size="sm"

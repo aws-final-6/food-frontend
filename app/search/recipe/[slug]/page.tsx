@@ -13,7 +13,7 @@ interface IMeta {
 const page = async ({ params }: { params: { slug: string } }) => {
   const keyword = decodeURIComponent(params.slug);
   const data = await SearchRecipeAPI(keyword, "page");
-  //   console.log(data);
+
   return (
     <>
       <p className={subtitle()}>{keyword}</p>

@@ -2,9 +2,10 @@
 const API_URL = process.env.API_URL;
 const BEDROCK_URL = process.env.BEDROCK_API_URL;
 
+import { errLog, infoLog, successLog } from "@/utils/Logger";
+
 export async function getRecipe(id: number) {
   const res = await fetch(`${API_URL}/recipe/getRecipe/${id}`);
-  //console.log(res);
 
   if (!res.ok) {
     throw new Error("Failed to fetch data");
@@ -20,6 +21,7 @@ export async function getNutrition(inglist: string[], serving: number) {
     ingredients: inglist,
     servings: serving,
   };
+  infoLog("BEDROCK_01", nutritionInfo);
   try {
     const response = await fetch(
       `${BEDROCK_URL}/mlr-prd-nut-api-stg/mlr-prd-nut`,
@@ -33,10 +35,11 @@ export async function getNutrition(inglist: string[], serving: number) {
     );
 
     const responseData = await response.json();
-    //console.log(responseData);
-    return responseData.body.text;
+    const parsedData = JSON.parse(responseData.body).content;
+    successLog("BEDROCK_01", response.status, parsedData[0].text);
+    return parsedData[0].text;
   } catch (error) {
-    console.error("Error:", error);
+    errLog("BEDROCK_01", error);
     return "영양정보 데이터를 가져오는데 실패했습니다.";
   }
 }

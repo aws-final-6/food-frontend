@@ -22,7 +22,7 @@ export async function updateBookmark(
     });
 
     const responseData = await response.text();
-    //console.log(responseData);
+
     return responseData;
   } catch (error) {
     console.error("Error:", error);
@@ -50,7 +50,6 @@ export async function removeBookmark(
     });
 
     const responseData = await response.text();
-    //console.log(responseData);
     return responseData;
   } catch (error) {
     console.error("Error:", error);

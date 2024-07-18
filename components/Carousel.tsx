@@ -32,11 +32,6 @@ const slides = [
 const Carousel = () => {
   const [current, setCurrent] = useState(0);
 
-  // Log the current index to ensure it updates correctly
-  useEffect(() => {
-    console.log("Current slide index:", current);
-  }, [current]);
-
   // Slide effect
   useEffect(() => {
     const interval = setInterval(() => {
@@ -77,7 +72,6 @@ const Carousel = () => {
             key={slide.id}
             onClick={() => {
               setCurrent(index);
-              console.log("Clicked slide index:", index);
             }}
           >
             {current === index && (

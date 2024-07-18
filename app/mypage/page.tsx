@@ -3,13 +3,14 @@ import { Button } from "@nextui-org/button";
 import { Card, CardBody, CardHeader } from "@nextui-org/card";
 import { Chip } from "@nextui-org/chip";
 import { Input } from "@nextui-org/input";
-import { MyPageAPI, UpdateMypage } from "./action";
+import { getMyPage, updateMypage } from "./action";
 import { FormEvent, useContext, useEffect, useState } from "react";
 import { UserContext } from "@/providers/userProvider";
 import clsx from "clsx";
 import MyPageBookmark from "@/components/Bookmark/MyPageBookmark";
 import { situ_tags, cate_tags } from "@/components/tagData";
 import { Checkbox } from "@nextui-org/checkbox";
+import { useAlert } from "@/components/Alert";
 
 interface IUser {
   user_id: string;
@@ -26,40 +27,59 @@ interface IUser {
 }
 
 export default function MyPage() {
-  const { userData } = useContext(UserContext);
+  const { userData, updateUserData } = useContext(UserContext);
   const [data, setData] = useState<IUser | null>(null);
   const [nickname, setNickname] = useState("");
   const [cateTag, setCateTag] = useState<number | null>(null);
   const [situTag, setSituTag] = useState<number | null>(null);
   const [subscribe, setSubscribe] = useState(false);
+  const [isChanged, setIsChanged] = useState(false);
+  const { showAlert, AlertComponent } = useAlert();
 
   useEffect(() => {
     const fetchData = async () => {
-      const result = await MyPageAPI(userData[0].id, userData[0].accessToken);
-      setData(result);
-      setNickname(result.user_nickname);
-      setCateTag(result.user_prefer[0].cate_no);
-      setSituTag(result.user_prefer[0].situ_no);
-      setSubscribe(result.user_subscription);
-
-      //console.log(result);
+      if (userData && userData.nickname) {
+        const result = await getMyPage(userData.id, userData.accessToken);
+        setData(result);
+        setNickname(result.user_nickname);
+        setCateTag(result.user_prefer[0].cate_no);
+        setSituTag(result.user_prefer[0].situ_no);
+        setSubscribe(result.user_subscription);
+      }
     };
     fetchData();
   }, [userData]);
 
+  useEffect(() => {
+    if (data) {
+      setIsChanged(
+        nickname !== data.user_nickname ||
+          cateTag !== data.user_prefer[0].cate_no ||
+          situTag !== data.user_prefer[0].situ_no ||
+          subscribe !== data.user_subscription
+      );
+    }
+  }, [nickname, cateTag, situTag, subscribe, data]);
+
   async function hanldeUpdateButton(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const formdata = new FormData(event.currentTarget);
-    console.log("cateTag, situTag", cateTag, situTag);
-    if (cateTag) formdata.append("prefer_one", cateTag.toString());
-    if (situTag) formdata.append("prefer_two", situTag.toString());
-    formdata.append("email", userData[0].email);
-    formdata.append("id", userData[0].id);
-    formdata.append("provider", userData[0].provider);
-    formdata.append("subscription", subscribe.toString());
-    const res = await UpdateMypage(formdata);
-    //console.log(data);
-    if (res === 200) alert("프로필이 업데이트 되었습니다");
+    if (userData && userData.nickname) {
+      if (cateTag) formdata.append("prefer_one", cateTag.toString());
+      if (situTag) formdata.append("prefer_two", situTag.toString());
+      formdata.append("accessToken", userData.accessToken);
+      formdata.append("id", userData.id);
+      formdata.append("provider", userData.provider);
+      formdata.append("subscription", subscribe.toString());
+      const res = await updateMypage(formdata);
+      if (cateTag && situTag)
+        updateUserData({
+          nickname: nickname,
+          situ_no: situTag,
+          cate_no: cateTag,
+        });
+      showAlert("마이페이지", res);
+    }
   }
 
   if (!data) return <div>Loading...</div>;
@@ -76,6 +96,7 @@ export default function MyPage() {
             <Input
               label="닉네임"
               name="nickname"
+              maxLength={15}
               value={nickname}
               onChange={(e) => setNickname(e.target.value)}
             />
@@ -86,7 +107,7 @@ export default function MyPage() {
                   <Chip
                     key={tag.id}
                     className={clsx(
-                      "m-1 hover:bg-orange-500 dark:text-subdark",
+                      "m-1 hover:bg-orange-500 dark:text-subdark cursor-pointer",
                       {
                         "bg-orange-900": cateTag === tag.id,
                         "text-white dark:text-white": cateTag === tag.id,
@@ -107,7 +128,7 @@ export default function MyPage() {
                   <Chip
                     key={tag.id}
                     className={clsx(
-                      "m-1 hover:bg-yellow-500 dark:text-subdark",
+                      "m-1 hover:bg-yellow-500 cursor-pointer dark:text-subdark",
                       {
                         "bg-yellow-700": situTag === tag.id,
                         "text-white dark:text-white": situTag === tag.id,
@@ -133,12 +154,13 @@ export default function MyPage() {
                 최신 레시피 정보를 이메일 또는 카카오톡으로 받겠습니다.
               </p>
             </Checkbox>
-            <Button type="submit" className="bg-sub">
+            <Button type="submit" className="bg-sub" isDisabled={!isChanged}>
               저장
             </Button>
           </CardBody>
         </form>
       </Card>
+      <AlertComponent />
     </div>
   );
 }

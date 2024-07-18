@@ -28,10 +28,10 @@ const SeasonRecommend = () => {
           <CardHeader className="pb-0 pt-2 px-4 flex-col">
             <h4 className="font-bold text-large">{food.seasonal_name}</h4>
           </CardHeader>
-          <CardBody className="overflow-visible py-2 flex items-center">
+          <CardBody className="py-2 flex items-center h-[200px] overflow-hidden">
             <Image
               alt={food.seasonal_name}
-              className="object-cover rounded-xl"
+              className="rounded-xl object-cover w-full h-full"
               src={food.seasonal_image}
               width={200}
               height={200}

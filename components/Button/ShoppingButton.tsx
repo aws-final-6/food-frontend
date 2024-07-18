@@ -23,23 +23,19 @@ interface IIngredient {
 const ShoppingButton = ({ ingredients }: any) => {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const [shoppingList, setShoppingList] = useState([]);
-  const startName = `${ingredients[0].ingredient}-0`
-  const [ingName, setIngName] = useState(startName)
-  const router = useRouter()
+  const startName = `${ingredients[0].ingredient}-0`;
+  const [ingName, setIngName] = useState(startName);
+  const router = useRouter();
 
   useEffect(() => {
     const fetchData = async () => {
-   
-        const name = ingName.slice(0, -2)
-        console.log(name)
-        const data = await getShoppingList(name)
-        setShoppingList(data)
-        console.log(data)
+      const name = ingName.slice(0, -2);
+
+      const data = await getShoppingList(name);
+      setShoppingList(data);
     };
     fetchData();
   }, [ingName]);
-
-  
 
   return (
     <>
@@ -73,7 +69,7 @@ const ShoppingButton = ({ ingredients }: any) => {
                     aria-label="Options"
                     placement="start"
                     onSelectionChange={(key) => {
-                      setIngName(String(key))
+                      setIngName(String(key));
                     }}
                   >
                     {ingredients.map((ing: IIngredient, index: number) => (
@@ -86,26 +82,39 @@ const ShoppingButton = ({ ingredients }: any) => {
                             {ing.ingredient}
                           </CardHeader>
                           <CardBody className="grid grid-cols-2 gap-4">
-                          {
-                            shoppingList.map((res:any, resIndex:number) => (
-                              <Card key={`${ing.ingredient}-${index}-res-${resIndex}-${res._id}`}>
+                            {shoppingList.map((res: any, resIndex: number) => (
+                              <Card
+                                key={`${ing.ingredient}-${index}-res-${resIndex}-${res._id}`}
+                              >
                                 <CardHeader>{res.name}</CardHeader>
                                 <CardBody className="flex flex-col justify-center items-center">
-                                  <Image src={res.image_url} width={200} height={200} alt={res.name}/>
+                                  <Image
+                                    src={res.image_url}
+                                    width={200}
+                                    height={200}
+                                    alt={res.name}
+                                  />
                                   <p>{res.channel_name}</p>
-                                  {
-                                    res.discountedRatio == 0? <p>{res.dispSalePrice}원</p>:
+                                  {res.discountedRatio == 0 ? (
+                                    <p>{res.dispSalePrice}원</p>
+                                  ) : (
                                     <div>
                                       <p>{res.discountedRatio}% 할인</p>
-                                    <p>{res.discountedPrice}</p>
+                                      <p>{res.discountedPrice}</p>
                                     </div>
-                                  }
-                                  <Button onClick={()=>{router.push(`https://shopping.naver.com/window-products/${res.channel_name}/${res._id}`)}}>구매하기</Button>
+                                  )}
+                                  <Button
+                                    onClick={() => {
+                                      router.push(
+                                        `https://shopping.naver.com/window-products/${res.channel_name}/${res._id}`
+                                      );
+                                    }}
+                                  >
+                                    구매하기
+                                  </Button>
                                 </CardBody>
                               </Card>
-                            ))
-                          }
-
+                            ))}
                           </CardBody>
                         </Card>
                       </Tab>

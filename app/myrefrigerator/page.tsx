@@ -39,12 +39,12 @@ const Page: React.FC = () => {
 
   useEffect(() => {
     async function fetchRefrigerators() {
-      if (userData && userData.length > 0) {
-        const data = await getRefrigerator(userData[0].id);
+      if (userData && userData.nickname) {
+        const data = await getRefrigerator(userData.id);
         setRefrig(data);
-        console.log(data);
       }
     }
+
     fetchRefrigerators();
   }, [userData]);
 

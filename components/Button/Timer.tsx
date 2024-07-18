@@ -59,11 +59,11 @@ const useTimer = (initialState: number) => {
     }
     setIsActive(false);
     setIsPaused(false);
-    setTimer(initialState);
+    setTimer(0);
   };
 
   const updateTimer = (newTime: number) => {
-    setTimer(newTime);
+    setTimer(Math.max(newTime, 0));
   };
 
   return {
@@ -93,7 +93,7 @@ const Timer = () => {
   } = useTimer(time);
 
   const handleUpdateTime = (increment: number) => {
-    const newTime = time + increment;
+    const newTime = Math.max(time + increment, 0);
     setTime(newTime);
     updateTimer(newTime);
   };
@@ -109,7 +109,7 @@ const Timer = () => {
           </CardBody>
           <CardFooter>
             <div className="flex flex-col gap-3">
-              <div className="flex flex-row gap-3">
+              <div className="grid grid-cols-2 gap-2">
                 <Button
                   name="onemin"
                   onClick={() => handleUpdateTime(60)}
@@ -120,6 +120,17 @@ const Timer = () => {
                 </Button>
                 <Button onClick={() => handleUpdateTime(300)} size="sm">
                   +5분
+                </Button>
+                <Button
+                  name="onemin"
+                  onClick={() => handleUpdateTime(-60)}
+                  size="sm"
+                  id={"1min"}
+                >
+                  -1분
+                </Button>
+                <Button onClick={() => handleUpdateTime(-300)} size="sm">
+                  -5분
                 </Button>
               </div>
               {!isActive && !isPaused ? (
@@ -145,11 +156,15 @@ const Timer = () => {
                   재시작
                 </Button>
               )}
+
               <Button
                 variant="ghost"
                 color="primary"
-                onClick={handleReset}
-                isDisabled={!isActive}
+                onClick={() => {
+                  handleReset();
+                  setTime(0);
+                }}
+                isDisabled={!isActive && timer === 0}
               >
                 초기화
               </Button>
