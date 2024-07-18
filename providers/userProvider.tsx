@@ -2,6 +2,7 @@
 
 import React, { createContext, useState, ReactNode, useEffect } from "react";
 import { LogoutAPI } from "./action";
+import { checkSession } from "@/components/Auth/action";
 
 interface IUserData {
   id: string;
@@ -69,6 +70,20 @@ export const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
         localStorage.removeItem("userData");
       }
     }
+    async function checkStatus() {
+      if (userData && userData.nickname) {
+        const result = await checkSession(
+          userData.provider,
+          userData.id,
+          userData.accessToken
+        );
+        console.log(result);
+        if (result != 200) {
+          clearUserData();
+        }
+      }
+    }
+    checkStatus();
   }, [userData]);
 
   useEffect(() => {
@@ -97,8 +112,8 @@ export const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
 
   const clearFavorites = () => {
     if (typeof window !== "undefined") {
-      localStorage.removeItem("favorite");
       setFavorite([]);
+      localStorage.removeItem("favorite");
     }
   };
 
