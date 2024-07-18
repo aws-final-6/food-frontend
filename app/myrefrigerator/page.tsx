@@ -40,7 +40,7 @@ const Page: React.FC = () => {
   useEffect(() => {
     async function fetchRefrigerators() {
       if (userData && userData.nickname) {
-        const data = await getRefrigerator(userData.id);
+        const data = await getRefrigerator(userData.id, userData.accessToken);
         setRefrig(data);
       }
     }
