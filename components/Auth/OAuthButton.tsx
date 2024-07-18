@@ -18,7 +18,6 @@ const OAuthButton = () => {
   useEffect(() => {
     if (typeof window !== "undefined") {
       setUserAgent(navigator.userAgent);
-      // console.log(navigator.userAgent);
     }
   }, []);
 

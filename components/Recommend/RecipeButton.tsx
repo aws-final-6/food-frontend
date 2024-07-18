@@ -12,20 +12,17 @@ interface IRecipe {
 const RecipeButton = ({ recipe_no }: IRecipe) => {
   const { userData } = useContext(UserContext);
   return (
-    <>
-      <CardFooter className="justify-center flex flex-row gap-5">
-        <Link href={`/recipe/${recipe_no}`}>
-          <Button className="bg-sub" variant="flat">
-            레시피 보기
-          </Button>
-        </Link>
-        {userData && userData.nickname ? (
-          <FavoriteButton recipe_id={recipe_no} />
-        ) : (
-          <></>
-        )}
-      </CardFooter>
-    </>
+    <div className="justify-center flex flex-row gap-5">
+      <Button className="bg-sub" variant="flat">
+        <Link href={`/recipe/${recipe_no}`}>레시피 보기</Link>
+      </Button>
+
+      {userData && userData.nickname ? (
+        <FavoriteButton recipe_id={recipe_no} />
+      ) : (
+        <></>
+      )}
+    </div>
   );
 };
 

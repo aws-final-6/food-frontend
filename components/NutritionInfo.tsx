@@ -20,10 +20,10 @@ interface NutritionInfoProps {
 }
 
 interface NutritionData {
-  [key: string]: number;
+  [key: string]: string;
 }
 
-const dailyRecommended: NutritionData = {
+const dailyRecommended: { [key: string]: number } = {
   칼로리: 2000,
   탄수화물: 300,
   지방: 65,
@@ -50,13 +50,17 @@ const getColor = (nutrient: string): string => {
 
 const getUnit = (nutrient: string): string => {
   const units: { [key: string]: string } = {
-    칼로리: "KCAL",
+    칼로리: "kcal",
     탄수화물: "g",
     지방: "g",
     단백질: "g",
     나트륨: "mg",
   };
   return units[nutrient] || "g";
+};
+
+const parseValue = (value: string): number => {
+  return parseFloat(value.replace(/[a-zA-Z]/g, ""));
 };
 
 const NutritionInfo: React.FC<NutritionInfoProps> = ({ ingredients }) => {
@@ -69,7 +73,9 @@ const NutritionInfo: React.FC<NutritionInfoProps> = ({ ingredients }) => {
       const parsedIngredients = parseIngredients(ingredients);
       const nutrition = await getNutrition(parsedIngredients, 1);
       const nutritionString = nutrition.replace(/'/g, '"');
-      setNutritionData(JSON.parse(nutritionString));
+      const nutritionJSON = JSON.parse(nutritionString);
+
+      setNutritionData(nutritionJSON);
     };
 
     fetchNutrition();
@@ -83,7 +89,8 @@ const NutritionInfo: React.FC<NutritionInfoProps> = ({ ingredients }) => {
     <div className="flex flex-col gap-5">
       <div className="flex flex-wrap gap-4 justify-center">
         {Object.entries(nutritionData).map(([nutrient, value]) => {
-          const percentage = (value / dailyRecommended[nutrient]) * 100;
+          const numericValue = parseValue(value);
+          const percentage = (numericValue / dailyRecommended[nutrient]) * 100;
           const level = getLevel(percentage);
           const color = getColor(nutrient);
           const unit = getUnit(nutrient);
@@ -101,8 +108,8 @@ const NutritionInfo: React.FC<NutritionInfoProps> = ({ ingredients }) => {
                   {nutrient}
                 </div>
                 <div className="flex flex-row gap-2 items-center">
-                  <p className="text-2xl font-bold">{value.toFixed(1)}</p>
-                  <p>{unit}</p>
+                  <p className="text-2xl font-bold">{numericValue}</p>
+                  <p className="text-sm font-bold">{unit}</p>
                 </div>
                 <div className="text-sm">{percentage.toFixed(1)}%</div>
                 <div className="text-xs font-semibold">{level}</div>

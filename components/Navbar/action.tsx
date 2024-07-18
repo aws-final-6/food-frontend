@@ -1,4 +1,5 @@
 "use server";
+import { infoLog, errLog, successLog } from "@/utils/Logger";
 
 const API_URL = process.env.API_URL;
 
@@ -7,6 +8,7 @@ export async function SearchRecipeAPI(keyword: string, type: string) {
     keyword: keyword,
     type: type,
   };
+  infoLog("SEARCH_01", recipeName);
 
   try {
     const response = await fetch(`${API_URL}/search/getTitleSearchList`, {
@@ -31,6 +33,7 @@ export async function SearchIngredientAPI(keyword: string, type: string) {
     keyword: keyword,
     type: type,
   };
+  infoLog("SEARCH_02", recipeName);
 
   try {
     const response = await fetch(`${API_URL}/search/getIngredientSearchList`, {

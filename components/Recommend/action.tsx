@@ -62,6 +62,17 @@ export async function getSeasonal() {
   }
 }
 
+export interface IPrefer {
+  recipe_id: number;
+  recipe_title: string;
+  recipe_thumbnail: string;
+}
+
+export interface GetPreferedResponse {
+  data: IPrefer[];
+  statusCode: number;
+}
+
 /**
  * **RECIPE_03**
  *
@@ -70,7 +81,10 @@ export async function getSeasonal() {
  * 사용자 선호도에 맞춰 레시피를 추천해준다.
  */
 
-export async function getPrefered(userid: string, accessToken: string) {
+export async function getPrefered(
+  userid: string,
+  accessToken: string
+): Promise<GetPreferedResponse> {
   const userInfo = {
     user_id: userid,
     access_token: accessToken,
@@ -89,10 +103,17 @@ export async function getPrefered(userid: string, accessToken: string) {
 
     const responseData = await response.json();
     successLog("RECIPE_03", response.status, responseData);
-    return getRandomItems(responseData.prefer_list, 4);
+
+    return {
+      data: getRandomItems(responseData.prefer_list, 4),
+      statusCode: response.status,
+    };
   } catch (error) {
     errLog("RECIPE_03", error);
-    return [];
+    return {
+      data: [],
+      statusCode: 500,
+    };
   }
 }
 
