@@ -12,7 +12,7 @@ interface IRecipe {
 const RecipeButton = ({ recipe_no }: IRecipe) => {
   const { userData } = useContext(UserContext);
   return (
-    <div className="justify-center flex flex-row gap-5">
+    <CardFooter className="justify-center flex flex-row gap-5">
       <Button className="bg-sub" variant="flat">
         <Link href={`/recipe/${recipe_no}`}>레시피 보기</Link>
       </Button>
@@ -22,7 +22,7 @@ const RecipeButton = ({ recipe_no }: IRecipe) => {
       ) : (
         <></>
       )}
-    </div>
+    </CardFooter>
   );
 };
 
