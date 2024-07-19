@@ -186,21 +186,38 @@ export async function deleteRefrigerator(id: number, user_id: string) {
   }
 }
 
+/**
+ * **OCR_01**
+ *
+ * API Path: /naver/
+ *
+ * 네이버 주문내역 OCR
+ */
+
 export async function getOCRNaverText(formData: FormData) {
   try {
     const response = await fetch(`${OCR_URL}/naver/`, {
       method: "POST",
       body: formData,
     });
+    infoLog("OCR_01", formData);
 
     const responseData = await response.json();
-
+    successLog("OCR_01", response.status, responseData);
     return responseData.result;
   } catch (error) {
-    console.error("Error:", error);
+    errLog("OCR_01", error);
     return "텍스트 가져오기 실패 했습니다.";
   }
 }
+
+/**
+ * **OCR_02**
+ *
+ * API Path: /coupang/
+ *
+ * 쿠팡 주문내역 OCR
+ */
 
 export async function getOCRCoupangText(formData: FormData) {
   try {
@@ -208,20 +225,31 @@ export async function getOCRCoupangText(formData: FormData) {
       method: "POST",
       body: formData,
     });
+    infoLog("OCR_02", formData);
 
     const responseData = await response.json();
-
+    successLog("OCR_02", response.status, responseData);
     return responseData.result;
   } catch (error) {
-    console.error("Error:", error);
+    errLog("OCR_02", error);
     return "네이버 OCR인식에 실패 했습니다.";
   }
 }
+
+/**
+ * **SEARCH_04**
+ *
+ * API Path: /search/getMultiSearchList
+ *
+ * 다중 재료로 검색하기 (for 냉장고속 재료 검색)
+ */
 
 export async function getMultiSearch(ingInfo: string[]) {
   const ing_info = {
     ing_search: ingInfo,
   };
+
+  infoLog("SEARCH_04", ing_info);
 
   try {
     const response = await fetch(`${API_URL}/search/getMultiSearchList`, {
@@ -233,10 +261,10 @@ export async function getMultiSearch(ingInfo: string[]) {
     });
 
     const responseData = await response.json();
-
+    successLog("SEARCH_04", response.status, responseData);
     return responseData;
   } catch (error) {
-    console.error("Error:", error);
-    return "쿠팡 OCR인식에 실패 했습니다.";
+    errLog("SEARCH_04", error);
+    return {};
   }
 }

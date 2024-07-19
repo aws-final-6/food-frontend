@@ -12,6 +12,7 @@ const FAST_API_URL = process.env.FAST_API_URL;
  *
  * DB에 추가된 최신 데이터를 가져온다.
  */
+
 export async function getToday() {
   try {
     const response = await fetch(`${API_URL}/recipe/getRecentList`);
@@ -110,6 +111,86 @@ export async function getPrefered(
     };
   } catch (error) {
     errLog("RECIPE_03", error);
+    return {
+      data: [],
+      statusCode: 500,
+    };
+  }
+}
+
+/**
+ * **RECIPE_04**
+ *
+ * API Path: /recipe/getCateList
+ *
+ * 카테고리 레시피 가져오기
+ */
+
+export async function getCateList(cateNo: number) {
+  const tagInfo = {
+    cate_no: cateNo,
+  };
+
+  infoLog("RECIPE_04", tagInfo);
+
+  try {
+    const response = await fetch(`${API_URL}/recipe/getCateList`, {
+      method: "POST",
+      body: JSON.stringify(tagInfo),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+
+    const responseData = await response.json();
+    successLog("RECIPE_04", response.status, responseData);
+
+    return {
+      data: getRandomItems(responseData.cate_list, 4),
+      statusCode: response.status,
+    };
+  } catch (error) {
+    errLog("RECIPE_04", error);
+    return {
+      data: [],
+      statusCode: 500,
+    };
+  }
+}
+
+/**
+ * **RECIPE_05**
+ *
+ * API Path: /recipe/getSituList
+ *
+ * 상황별 레시피 가져오기
+ */
+
+export async function getSituList(situNo: number) {
+  const tagInfo = {
+    situ_no: situNo,
+  };
+
+  infoLog("RECIPE_05", tagInfo);
+
+  try {
+    const response = await fetch(`${API_URL}/recipe/getSituList`, {
+      method: "POST",
+      body: JSON.stringify(tagInfo),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+
+    const responseData = await response.json();
+    successLog("RECIPE_05", response.status, responseData);
+
+    return {
+      data: getRandomItems(responseData.situ_list, 4),
+      statusCode: response.status,
+    };
+  } catch (error) {
+    errLog("RECIPE_04", error);
     return {
       data: [],
       statusCode: 500,
