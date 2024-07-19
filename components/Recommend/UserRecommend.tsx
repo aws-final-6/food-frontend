@@ -95,7 +95,7 @@ const UserRecommend: React.FC = () => {
                 height={200}
               />
             </CardBody>
-            <CardFooter className="flex flex-col my-2 px-2 justify-center items-center">
+            <CardFooter className="flex flex-col my-4 px-2 justify-center items-center gap-3">
               <h4 className="font-bold text-large">{food.recipe_title}</h4>
               <RecipeButton recipe_no={food.recipe_id} />
             </CardFooter>
