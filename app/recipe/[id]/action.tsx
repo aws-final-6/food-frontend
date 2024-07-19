@@ -4,17 +4,41 @@ const BEDROCK_URL = process.env.BEDROCK_API_URL;
 
 import { errLog, infoLog, successLog } from "@/utils/Logger";
 
+/**
+ * **RECIPE_06**
+ *
+ * API Path: /getRecipe/:id
+ *
+ * 레시피 바디 데이터 가져오기
+ */
+
 export async function getRecipe(id: number) {
-  const res = await fetch(`${API_URL}/recipe/getRecipe/${id}`);
+  try {
+    const res = await fetch(`${API_URL}/recipe/getRecipe/${id}`);
+    infoLog("RECIPE_06", { recipe_id: `${id}` });
 
-  if (!res.ok) {
-    throw new Error("Failed to fetch data");
+    if (!res.ok) {
+      throw new Error("Failed to fetch data");
+    }
+
+    const recipeList = await res.json();
+    successLog("RECIPE_06", res.status, recipeList);
+
+    return recipeList;
+  } catch (error) {
+    errLog("RECIPE_06", error);
+
+    return [];
   }
-
-  const recipeList = await res.json();
-
-  return recipeList;
 }
+
+/**
+ * **BEDROCK_01**
+ *
+ * API Path: /mlr-prd-nut-api-stg/mlr-prd-nut
+ *
+ * 영양정보 가져오기
+ */
 
 export async function getNutrition(inglist: string[], serving: number) {
   const nutritionInfo = {

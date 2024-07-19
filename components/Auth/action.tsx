@@ -51,7 +51,9 @@ export async function checkSession(
  *
  * API Path: /auth/requestToken
  *
- * 로그인
+ * 로그인 API
+ *
+ * user_provider: provider, user_agent: userAgent
  */
 
 export async function LoginAPI(provider: string, userAgent: any) {

@@ -64,6 +64,7 @@ export const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
 
   useEffect(() => {
     if (typeof window !== "undefined") {
+      checkStatus();
       if (userData) {
         localStorage.setItem("userData", JSON.stringify(userData));
       } else {
@@ -77,13 +78,12 @@ export const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
           userData.id,
           userData.accessToken
         );
-        console.log(result);
+        console.log("provider", result);
         if (result != 200) {
           clearUserData();
         }
       }
     }
-    checkStatus();
   }, [userData]);
 
   useEffect(() => {
