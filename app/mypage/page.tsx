@@ -143,7 +143,7 @@ export default function MyPage() {
               </div>
             </div>
             <p className="font-jua">즐겨찾기</p>
-            <MyPageBookmark />
+            <MyPageBookmark callPosition="myPage" />
 
             <p className="font-jua">구독</p>
             <Checkbox
