@@ -46,9 +46,14 @@ const FavoriteButton = ({ recipe_id }: IFavorite) => {
         variant="bordered"
         isIconOnly
         color="warning"
+        className="rounded-full bg-white p-0"
         onClick={handleFavorite}
       >
-        {star ? <FaStar /> : <FaRegStar />}
+        {star ? (
+          <FaStar className="w-6 p-0" />
+        ) : (
+          <FaRegStar className="w-6 p-0" />
+        )}
       </Button>
     </div>
   );

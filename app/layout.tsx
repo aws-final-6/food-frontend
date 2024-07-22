@@ -1,12 +1,12 @@
 import "@/styles/globals.css";
 import { Metadata, Viewport } from "next";
-import { Link } from "@nextui-org/link";
 import clsx from "clsx";
 import { UIProvider } from "@/providers/uiProvider";
 import { UserProvider } from "@/providers/userProvider";
 import { siteConfig } from "@/config/site";
 import { fontSans, fontJua, fontGaegu } from "@/config/fonts";
 import Navbar from "@/components/Navbar/Navbar";
+import Footer from "@/components/Footer";
 
 export const metadata: Metadata = {
   title: {
@@ -44,22 +44,14 @@ export default function RootLayout({
       >
         <UIProvider themeProps={{ attribute: "class", defaultTheme: "light" }}>
           <UserProvider>
-            <div className="relative flex flex-col h-screen">
+            <div className="relative flex flex-col h-screen ">
               <Navbar />
-              <main className="container mx-auto max-w-7xl pt-16 px-6 flex-grow">
-                {children}
-              </main>
-              <footer className="w-full flex items-center justify-center py-3">
-                <Link
-                  isExternal
-                  className="flex items-center gap-1 text-current"
-                  href="https://github.com/awscloudschool4"
-                  title="AWS Cloud School 4기 Github"
-                >
-                  <span className="text-default-600">Created by</span>
-                  <p className="text-primary">AWS Cloud School 4기 6조</p>
-                </Link>
-              </footer>
+              <div className="bg-[#FFF6F3]">
+                <main className="container mx-auto max-w-7xl py-16 px-6 flex-grow bg-[#FEFEFC]">
+                  {children}
+                </main>
+              </div>
+              <Footer />
             </div>
           </UserProvider>
         </UIProvider>

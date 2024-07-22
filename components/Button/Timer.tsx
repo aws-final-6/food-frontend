@@ -177,7 +177,6 @@ const Timer = () => {
         color="primary"
         size="lg"
         startContent={<ImStopwatch />}
-        variant="flat"
         onClick={() => setShow(!show)}
       >
         타이머

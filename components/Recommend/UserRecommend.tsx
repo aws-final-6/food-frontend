@@ -1,27 +1,33 @@
 "use client";
 import React, { useContext, useEffect, useState } from "react";
-import { Card, CardBody, CardFooter, CardHeader } from "@nextui-org/card";
-import { subtitle } from "../primitives";
-import Image from "next/image";
-import { Button } from "@nextui-org/button";
-import { getPrefered } from "./action";
-import { UserContext } from "@/providers/userProvider";
-import RecipeButton from "./RecipeButton";
-import Link from "next/link";
-import { useRouter } from "next/navigation";
 
-interface IPrefer {
+import { subtitle } from "../primitives";
+import { Button } from "@nextui-org/button";
+import { getCateList, getPrefered, getSituList } from "./action";
+import { UserContext } from "@/providers/userProvider";
+import Link from "next/link";
+import CardCarousel from "./CardCarousel";
+import { Tabs, Tab } from "@nextui-org/tabs";
+import { Chip } from "@nextui-org/chip";
+import { getCateLabel, getSituLabel } from "../tagData";
+
+interface IRecipe {
   recipe_id: number;
   recipe_title: string;
   recipe_thumbnail: string;
+  cate_no: number;
+  situ_no: number;
 }
 
 const UserRecommend: React.FC = () => {
   const { userData } = useContext(UserContext);
-  const [data, setData] = useState<IPrefer[] | null>(null);
+  const [data, setData] = useState<IRecipe[] | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const router = useRouter();
+  const [cateNo, setCateNo] = useState(() => (userData ? userData.cate_no : 0));
+  const [situNo, setSituNo] = useState(() => (userData ? userData.situ_no : 0));
+  const [situData, setSituData] = useState<IRecipe[] | null>(null);
+  const [cateData, setCateData] = useState<IRecipe[] | null>(null);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -48,6 +54,42 @@ const UserRecommend: React.FC = () => {
     fetchData();
   }, [userData]);
 
+  useEffect(() => {
+    const fetchSituData = async () => {
+      try {
+        if (userData && userData.nickname) {
+          setIsLoading(true);
+          const { data, statusCode } = await getSituList(situNo);
+          setSituData(data);
+        }
+      } catch (err) {
+        setError("An error occurred while fetching the data.");
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchSituData();
+  }, [situNo]);
+
+  useEffect(() => {
+    const fetchCateData = async () => {
+      try {
+        if (userData && userData.nickname) {
+          setIsLoading(true);
+          const { data, statusCode } = await getCateList(cateNo);
+          setCateData(data);
+        }
+      } catch (err) {
+        setError("An error occurred while fetching the data.");
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchCateData();
+  }, [cateNo]);
+
   if (!userData) {
     return (
       <div className="flex flex-col gap-3">
@@ -73,34 +115,64 @@ const UserRecommend: React.FC = () => {
     return <p>추천 레시피가 없습니다.</p>;
   }
 
+  if (!cateData || cateData.length === 0) {
+    return <p>추천 레시피가 없습니다.</p>;
+  }
+
+  if (!situData || situData.length === 0) {
+    return <p>추천 레시피가 없습니다.</p>;
+  }
+
   return (
     <>
       <h1 className={subtitle()}>오늘의 추천 레시피</h1>
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 p-4">
-        {data.map((food, i) => (
-          <Card
-            key={i}
-            className="hover:border-3 hover:border-main border-3 cursor-pointer"
-            shadow="sm"
-            onPress={() => router.push(`/recipe/${food.recipe_id}`)}
-            isPressable={true}
-            radius="none"
+      <div>
+        <Tabs
+          aria-label="Options"
+          variant="underlined"
+          className="mb-4"
+          classNames={{
+            tabList: "gap-6 w-full relative rounded-none p-0",
+            cursor: "w-full bg-main",
+            tab: "max-w-fit px-0 h-12",
+            tabContent: "group-data-[selected=true]:font-bold",
+          }}
+        >
+          <Tab
+            key="photos"
+            title={
+              <div className="flex items-center space-x-2">
+                <span>
+                  {getSituLabel(userData.situ_no)} +{" "}
+                  {getCateLabel(userData.cate_no)}
+                </span>
+              </div>
+            }
           >
-            <CardBody className="overflow-visible p-0">
-              <Image
-                alt={food.recipe_title}
-                className="object-cover"
-                src={food.recipe_thumbnail}
-                width={400}
-                height={200}
-              />
-            </CardBody>
-            <CardFooter className="flex flex-col my-4 px-2 justify-center items-center gap-3">
-              <h4 className="font-bold text-large">{food.recipe_title}</h4>
-              <RecipeButton recipe_no={food.recipe_id} />
-            </CardFooter>
-          </Card>
-        ))}
+            <CardCarousel data={data} cName="user_prefered" />
+          </Tab>
+
+          <Tab
+            key="music"
+            title={
+              <div className="flex items-center space-x-2">
+                <span>카테고리: {getCateLabel(cateNo)}</span>
+              </div>
+            }
+          >
+            <CardCarousel data={cateData} cName="user_cate" />
+          </Tab>
+          <Tab
+            key="videos"
+            title={
+              <div className="flex items-center space-x-2">
+                <span>상황별 메뉴: {getSituLabel(situNo)}</span>
+              </div>
+            }
+          >
+            <CardCarousel data={situData} cName="user_situ" />
+          </Tab>
+        </Tabs>
       </div>
     </>
   );

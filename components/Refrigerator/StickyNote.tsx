@@ -52,10 +52,10 @@ const StickyNote: React.FC<IIngredients> = ({
             }}
           />
         </div>
-        <p className="font-gaegu">{refrigerator_ing_name}</p>
+        <p className="font-gaegu font-bold">{refrigerator_ing_name}</p>
       </div>
       <div className="flex md:flex-row flex-col gap-1/12 w-33 justify-center items-center">
-        <Tooltip key={refrigerator_ing_name} content={"냉장고에 넣은 날"}>
+        <Tooltip key={refrigerator_ing_name} content={enter_date}>
           <Chip
             size="sm"
             className="font-gaegu text-black font-bold"
