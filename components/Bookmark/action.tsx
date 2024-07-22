@@ -11,12 +11,16 @@ import { infoLog, successLog, errLog } from "@/utils/Logger";
  * 레시피 메타데이터 와 함께 즐겨찾기 목록 불러오기
  */
 
-export async function mypageBookmark(userId: string, accessToken: string) {
+export async function mypageBookmark(
+  userId: string,
+  accessToken: string,
+  callPosition: string
+) {
   const userInfo = {
     user_id: userId,
     access_token: accessToken,
   };
-  infoLog("BOOKMK_02", userInfo);
+  infoLog("BOOKMK_02", userInfo, callPosition);
 
   try {
     const response = await fetch(`${API_URL}/bookmark/getBookmarkList`, {

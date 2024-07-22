@@ -42,7 +42,6 @@ const ShoppingButton = ({ ingredients }: any) => {
       <Button
         onPress={onOpen}
         size="lg"
-        variant="flat"
         color="success"
         startContent={<FaShoppingCart />}
       >

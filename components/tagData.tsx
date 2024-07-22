@@ -33,3 +33,13 @@ export const situ_tags = [
   { id: 14, label: "이유식" },
   { id: 22, label: "기타" },
 ];
+
+export function getCateLabel(cate_no: number) {
+  const category = cate_tags.find((tag) => tag.id === cate_no);
+  return category ? category.label : undefined;
+}
+
+export function getSituLabel(situ_no: number) {
+  const category = situ_tags.find((tag) => tag.id === situ_no);
+  return category ? category.label : undefined;
+}

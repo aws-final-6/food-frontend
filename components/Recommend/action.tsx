@@ -27,7 +27,8 @@ export async function getToday() {
     successLog("RECIPE_01", response.status, recipeList);
 
     // 랜덤하게 4개의 데이터 전달
-    return getRandomItems(recipeList.recipes, 4);
+    // return getRandomItems(recipeList.recipes, 4);
+    return recipeList.recipes;
   } catch (error) {
     errLog("RECIPE_01", error);
 
@@ -63,14 +64,16 @@ export async function getSeasonal() {
   }
 }
 
-export interface IPrefer {
+interface IRecipe {
   recipe_id: number;
   recipe_title: string;
   recipe_thumbnail: string;
+  cate_no: number;
+  situ_no: number;
 }
 
 export interface GetPreferedResponse {
-  data: IPrefer[];
+  data: IRecipe[];
   statusCode: number;
 }
 
@@ -106,7 +109,7 @@ export async function getPrefered(
     successLog("RECIPE_03", response.status, responseData);
 
     return {
-      data: getRandomItems(responseData.prefer_list, 4),
+      data: responseData.prefer_list,
       statusCode: response.status,
     };
   } catch (error) {
@@ -126,7 +129,9 @@ export async function getPrefered(
  * 카테고리 레시피 가져오기
  */
 
-export async function getCateList(cateNo: number) {
+export async function getCateList(
+  cateNo: number
+): Promise<GetPreferedResponse> {
   const tagInfo = {
     cate_no: cateNo,
   };
@@ -146,7 +151,7 @@ export async function getCateList(cateNo: number) {
     successLog("RECIPE_04", response.status, responseData);
 
     return {
-      data: getRandomItems(responseData.cate_list, 4),
+      data: getRandomItems(responseData.cate_list, 20),
       statusCode: response.status,
     };
   } catch (error) {
@@ -166,7 +171,9 @@ export async function getCateList(cateNo: number) {
  * 상황별 레시피 가져오기
  */
 
-export async function getSituList(situNo: number) {
+export async function getSituList(
+  situNo: number
+): Promise<GetPreferedResponse> {
   const tagInfo = {
     situ_no: situNo,
   };
@@ -186,7 +193,7 @@ export async function getSituList(situNo: number) {
     successLog("RECIPE_05", response.status, responseData);
 
     return {
-      data: getRandomItems(responseData.situ_list, 4),
+      data: getRandomItems(responseData.situ_list, 20),
       statusCode: response.status,
     };
   } catch (error) {

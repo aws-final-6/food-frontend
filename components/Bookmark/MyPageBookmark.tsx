@@ -5,6 +5,7 @@ import { Card, CardBody } from "@nextui-org/card";
 import { mypageBookmark } from "./action";
 import { UserContext } from "@/providers/userProvider";
 import MyPageFavoriteButton from "./MyPageFavoriteButton";
+import Link from "next/link";
 MyPageFavoriteButton;
 
 interface IBookmark {
@@ -12,9 +13,14 @@ interface IBookmark {
   recipe_title: string;
 }
 
-const MyPageBookmark = () => {
+interface ILog {
+  callPosition: string;
+}
+
+const MyPageBookmark = ({ callPosition }: ILog) => {
   const [bookmarks, setBookmarks] = useState<IBookmark[]>([]);
   const { userData } = useContext(UserContext);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -22,8 +28,10 @@ const MyPageBookmark = () => {
         try {
           const result = await mypageBookmark(
             userData.id,
-            userData.accessToken
+            userData.accessToken,
+            callPosition
           );
+          setLoading(false);
           setBookmarks(result);
         } catch (error) {
           console.error("Failed to fetch bookmarks:", error);
@@ -32,6 +40,9 @@ const MyPageBookmark = () => {
     };
     fetchData();
   }, [userData]);
+  if (loading) {
+    return <div className="p-4 text-center">Loading...</div>;
+  }
 
   return (
     <Card className="py-10 px-10">
@@ -48,7 +59,9 @@ const MyPageBookmark = () => {
                 recipeId={bookmark.recipe_id}
                 setBookmarks={setBookmarks}
               />
-              <p>{bookmark.recipe_title}</p>
+              <Link href={`/recipe/${bookmark.recipe_id}`}>
+                <p className="hover:text-main">{bookmark.recipe_title}</p>
+              </Link>
             </div>
           ))
         )}

@@ -42,7 +42,7 @@ const Carousel = () => {
   }, []);
 
   return (
-    <div className="relative h-[calc(100vh-80px)] overflow-hidden">
+    <div className="relative h-[calc(60vh-80px)] overflow-hidden">
       <div
         className="w-full h-full flex transition-transform ease-in-out duration-1000"
         style={{ transform: `translateX(-${current * 100}%)` }} // Updated to use percentage for full slide width

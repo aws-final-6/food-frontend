@@ -1,43 +1,45 @@
-import React from "react";
-import { SearchRecipeAPI } from "@/components/Navbar/action";
-import { Card, CardBody, CardFooter, CardHeader } from "@nextui-org/card";
-import Image from "next/image";
-import { subtitle } from "@/components/primitives";
-import RecipeButton from "@/components/Recommend/RecipeButton";
+"use client";
 
-interface IMeta {
-  recipe_id: number;
-  recipe_title: string;
-  recipe_thumbnail: string;
-}
-const page = async ({ params }: { params: { slug: string } }) => {
+import React, { useEffect, useState } from "react";
+import { SearchRecipeAPI } from "@/components/Navbar/action";
+import { subtitle } from "@/components/primitives";
+import FoodCard from "@/components/Recommend/FoodCard";
+import { IRecipe } from "@/components/Recommend/CardCarousel";
+const Page = ({ params }: { params: { slug: string } }) => {
   const keyword = decodeURIComponent(params.slug);
-  const data = await SearchRecipeAPI(keyword, "page");
+  const [data, setData] = useState<IRecipe[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      setIsLoading(true);
+      try {
+        const result = await SearchRecipeAPI(keyword, "page");
+        setData(result);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchData();
+  }, [keyword]);
+
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <>
       <p className={subtitle()}>{keyword}</p>
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 p-4">
-        {data.map((food: IMeta, i: number) => (
-          <Card key={i} className="py-4" isPressable>
-            <CardHeader className="pb-0 pt-2 px-4 flex-col">
-              <h4 className="font-bold text-large">{food.recipe_title}</h4>
-            </CardHeader>
-            <CardBody className="overflow-visible py-2 flex items-center">
-              <Image
-                alt={food.recipe_title}
-                className="object-cover rounded-xl"
-                src={food.recipe_thumbnail}
-                width={200}
-                height={200}
-              />
-            </CardBody>
-            <RecipeButton recipe_no={food.recipe_id} />
-          </Card>
+        {data.map((food: IRecipe, i: number) => (
+          <FoodCard key={i} cName={"recipeSearch"} index={i} food={food} />
         ))}
       </div>
     </>
   );
 };
 
-export default page;
+export default Page;

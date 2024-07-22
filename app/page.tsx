@@ -17,7 +17,6 @@ const Page = () => {
     <div className="w-full flex flex-col gap-5">
       <main className="flex flex-col items-center justify-center gap-10">
         <Carousel />
-        <SlidingLogos />
         <UserRecommend />
         <h1 className={subtitle()}>새로운 레시피</h1>
         <TodayRecommend />
@@ -29,7 +28,11 @@ const Page = () => {
         <YouTubeShortRecommend />
       </main>
       <div className="fixed bottom-20 right-20 flex flex-col gap-3 items-start justify-center z-30 w-40">
-        {userData && userData.nickname ? <BookmarkButton /> : <></>}
+        {userData && userData.nickname ? (
+          <BookmarkButton callPosition="home" />
+        ) : (
+          <></>
+        )}
       </div>
     </div>
   );
