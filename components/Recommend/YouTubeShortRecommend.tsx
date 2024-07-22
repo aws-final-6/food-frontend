@@ -1,7 +1,7 @@
 "use client";
 import React, { useState, useEffect } from "react";
-import { Card, CardBody, CardHeader, CardFooter } from "@nextui-org/card";
 import { getShortsList } from "./action";
+import VideoCard from "./VideoCard";
 
 interface IVideo {
   video_id: string;
@@ -46,23 +46,12 @@ const YouTubeShortRecommend = () => {
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 p-4">
       {data.map((video: IVideo, i: number) => (
-        <Card key={i} className="py-4" isPressable>
-          <CardHeader className="pb-0 pt-2 px-4 flex-col">
-            <h4 className="font-bold text-large">{video.title}</h4>
-          </CardHeader>
-          <CardBody className="overflow-visible py-2 flex items-center">
-            <iframe
-              width="360"
-              height="315"
-              src={`https://www.youtube.com/embed/${video.video_id}`}
-              title="YouTube video player"
-              frameBorder="0"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-              referrerPolicy="strict-origin-when-cross-origin"
-              allowFullScreen
-            ></iframe>
-          </CardBody>
-        </Card>
+        <VideoCard
+          video_id={video.video_id}
+          videoLink={`https://www.youtube.com/embed/${video.video_id}`}
+          title={video.title}
+          index={i}
+        />
       ))}
     </div>
   );

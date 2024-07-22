@@ -30,11 +30,9 @@ const CropImage: React.FC = () => {
 
   const onImageLoaded = useCallback((image: HTMLImageElement) => {
     imageRef.current = image;
-    console.log("Image loaded:", image);
   }, []);
 
   const onCropComplete = useCallback((crop: Crop) => {
-    console.log("Crop complete:", crop);
     makeClientCrop(crop);
   }, []);
 
@@ -43,16 +41,13 @@ const CropImage: React.FC = () => {
   };
 
   const makeClientCrop = async (crop: Crop) => {
-    console.log("imageref", imageRef.current);
-    console.log("crop", crop);
-
     if (imageRef.current && crop.width && crop.height) {
       const croppedImageUrl = await getCroppedImg(
         imageRef.current,
         crop,
         "newFile.jpeg"
       );
-      console.log("Cropped image URL:", croppedImageUrl);
+
       setCroppedImageUrl(croppedImageUrl);
     }
   };
@@ -109,9 +104,7 @@ const CropImage: React.FC = () => {
       formData.append("file", file);
 
       // Debugging logs: Check FormData content
-      formData.forEach((value, key) => {
-        console.log(`${key}:`, value);
-      });
+      formData.forEach((value, key) => {});
 
       const res = await fetch("http://3.35.71.235:8000/naver/", {
         method: "POST",
@@ -123,7 +116,6 @@ const CropImage: React.FC = () => {
       }
 
       const data = await res.json();
-      console.log("OCR Text:", data);
     } catch (error) {
       console.error("Error:", error);
     }

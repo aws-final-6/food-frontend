@@ -32,11 +32,6 @@ const slides = [
 const Carousel = () => {
   const [current, setCurrent] = useState(0);
 
-  // Log the current index to ensure it updates correctly
-  useEffect(() => {
-    console.log("Current slide index:", current);
-  }, [current]);
-
   // Slide effect
   useEffect(() => {
     const interval = setInterval(() => {
@@ -47,7 +42,7 @@ const Carousel = () => {
   }, []);
 
   return (
-    <div className="relative h-[calc(100vh-80px)] overflow-hidden">
+    <div className="relative h-[calc(60vh-80px)] overflow-hidden">
       <div
         className="w-full h-full flex transition-transform ease-in-out duration-1000"
         style={{ transform: `translateX(-${current * 100}%)` }} // Updated to use percentage for full slide width
@@ -77,7 +72,6 @@ const Carousel = () => {
             key={slide.id}
             onClick={() => {
               setCurrent(index);
-              console.log("Clicked slide index:", index);
             }}
           >
             {current === index && (

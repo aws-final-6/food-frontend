@@ -11,7 +11,11 @@ import React, { useState } from "react";
 import MyPageBookmark from "../Bookmark/MyPageBookmark";
 import { FaRegStar } from "react-icons/fa";
 
-const BookmarkButton = () => {
+interface ILog {
+  callPosition: string;
+}
+
+const BookmarkButton = ({ callPosition }: ILog) => {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
   return (
@@ -19,8 +23,7 @@ const BookmarkButton = () => {
       <Button
         onPress={onOpen}
         size="lg"
-        variant="flat"
-        color="warning"
+        className="bg-sub"
         startContent={<FaRegStar />}
       >
         즐겨찾기
@@ -39,7 +42,7 @@ const BookmarkButton = () => {
                 즐겨찾기
               </ModalHeader>
               <ModalBody>
-                <MyPageBookmark />
+                <MyPageBookmark callPosition={callPosition} />
               </ModalBody>
             </>
           )}

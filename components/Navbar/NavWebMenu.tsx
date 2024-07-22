@@ -9,15 +9,15 @@ import { UserContext } from "@/providers/userProvider";
 import { usePathname } from "next/navigation";
 
 const NavWebMenu = () => {
-  const { isUserDataEmpty } = useContext(UserContext);
+  const { userData } = useContext(UserContext);
   const pathname = usePathname();
   const [navWebMenu, setNavWebMenu] = useState(siteConfig.webbasicItems);
 
   useEffect(() => {
-    if (!isUserDataEmpty()) {
+    if (userData && userData.nickname) {
       setNavWebMenu(siteConfig.webuserItems);
     }
-  }, []);
+  }, [userData]);
   return (
     <>
       <ul className="hidden lg:flex gap-12 justify-center ml-2">

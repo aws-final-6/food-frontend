@@ -25,6 +25,10 @@ phases:
       - echo Tagging the Docker image...
       - docker tag ${ECR_REGISTRY}/mylittlerecipebook/mlr-prd-fe-img:${CODEBUILD_BUILD_NUMBER} ${ECR_REGISTRY}/mylittlerecipebook/mlr-prd-fe-img:latest
       - echo "Docker image tagged"
+      - echo Saving the Docker image as a .tar file...
+      - docker save -o mylittlerecipebook_img_${CODEBUILD_BUILD_NUMBER}.tar ${ECR_REGISTRY}/mylittlerecipebook/mlr-prd-fe-img:${CODEBUILD_BUILD_NUMBER}
+      - echo Uploading the .tar file to S3...
+      - aws s3 cp mylittlerecipebook_img_${CODEBUILD_BUILD_NUMBER}.tar s3://${S3_BUCKET_NAME}/mylittlerecipebook_img_${CODEBUILD_BUILD_NUMBER}.tar
       - echo Pushing the Docker image to Seoul region ECR...
       - docker push ${ECR_REGISTRY}/mylittlerecipebook/mlr-prd-fe-img:${CODEBUILD_BUILD_NUMBER}
       - docker push ${ECR_REGISTRY}/mylittlerecipebook/mlr-prd-fe-img:latest
@@ -40,8 +44,8 @@ phases:
       - git add fe_deployment.yaml
       - git commit -m "Update image to ${ECR_REGISTRY}/mylittlerecipebook/mlr-prd-fe-img:${CODEBUILD_BUILD_NUMBER}"
       - git push https://x-access-token:${TOKEN_GITHUB}@github.com/aws-final-6/GitOps_Repo.git
-      
+
 artifacts:
   files:
-    - '**/*'
+    - "**/*"
   discard-paths: yes

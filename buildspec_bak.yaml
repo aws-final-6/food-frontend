@@ -1,0 +1,33 @@
+version: 0.2
+
+phases:
+  install:
+    commands:
+      - echo Logging in to Amazon ECR in Seoul region...
+      - aws ecr get-login-password --region ap-northeast-2 | docker login --username AWS --password-stdin ${ECR_REGISTRY}
+
+  pre_build:
+    commands:
+      - echo Setting up
+
+  build:
+    commands:
+      - echo Building the Docker image...
+      - docker build -t ${ECR_REGISTRY}/mylittlerecipebook/mlr-prd-fe-img:${CODEBUILD_BUILD_NUMBER} -f Dockerfile .
+      - echo "Docker build completed"
+      - docker images
+
+  post_build:
+    commands:
+      - echo Tagging the Docker image...
+      - docker tag ${ECR_REGISTRY}/mylittlerecipebook/mlr-prd-fe-img:${CODEBUILD_BUILD_NUMBER} ${ECR_REGISTRY}/mylittlerecipebook/mlr-prd-fe-img:latest
+      - echo "Docker image tagged"
+      - echo Pushing the Docker image to Seoul region ECR...
+      - docker push ${ECR_REGISTRY}/mylittlerecipebook/mlr-prd-fe-img:${CODEBUILD_BUILD_NUMBER}
+      - docker push ${ECR_REGISTRY}/mylittlerecipebook/mlr-prd-fe-img:latest
+      - echo "Docker push completed"
+      
+artifacts:
+  files:
+    - '**/*'
+  discard-paths: yes

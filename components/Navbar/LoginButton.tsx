@@ -6,10 +6,10 @@ import { Button } from "@nextui-org/button";
 import { Link } from "@nextui-org/link";
 
 const LoginButton = () => {
-  const { isUserDataEmpty, clearUserData, userData } = useContext(UserContext);
+  const { clearUserData, userData } = useContext(UserContext);
 
   function handleLogout() {
-    if (userData) {
+    if (userData && userData.nickname) {
     }
     clearUserData();
   }
@@ -17,16 +17,7 @@ const LoginButton = () => {
   return (
     <>
       <NavbarItem className="hidden md:flex">
-        {isUserDataEmpty() ? (
-          <Button
-            as={Link}
-            className="text-sm font-normal text-default-600 bg-default-100"
-            href={"/login"}
-            variant="flat"
-          >
-            로그인
-          </Button>
-        ) : (
+        {userData && userData.nickname ? (
           <Button
             as={Link}
             className="text-sm font-normal text-default-600 bg-default-100"
@@ -35,6 +26,15 @@ const LoginButton = () => {
             onClick={handleLogout}
           >
             로그아웃
+          </Button>
+        ) : (
+          <Button
+            as={Link}
+            className="text-sm font-normal text-default-600 bg-default-100"
+            href={"/login"}
+            variant="flat"
+          >
+            로그인
           </Button>
         )}
       </NavbarItem>

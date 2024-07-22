@@ -1,12 +1,22 @@
 "use server";
+import { infoLog, errLog, successLog } from "@/utils/Logger";
 
 const API_URL = process.env.API_URL;
+
+/**
+ * **SEARCH_01**
+ *
+ * API Path: /search/getTitleSearchList
+ *
+ * 제목으로 레시피 검색하기
+ */
 
 export async function SearchRecipeAPI(keyword: string, type: string) {
   const recipeName = {
     keyword: keyword,
     type: type,
   };
+  infoLog("SEARCH_01", recipeName);
 
   try {
     const response = await fetch(`${API_URL}/search/getTitleSearchList`, {
@@ -18,20 +28,28 @@ export async function SearchRecipeAPI(keyword: string, type: string) {
     });
 
     const responseData = await response.json();
-
+    successLog("SEARCH_01", response.status, responseData);
     return responseData.search_list;
   } catch (error) {
-    console.error("SEARCH_01 Error:", error);
-    return "레시피 검색에 실패했습니다.";
+    errLog("SEARCH_01", error);
+    return [];
   }
 }
+
+/**
+ * **SEARCH_02**
+ *
+ * API Path: /search/getIngredientSearchList
+ *
+ * 재료로 레시피 검색하기
+ */
 
 export async function SearchIngredientAPI(keyword: string, type: string) {
   const recipeName = {
     keyword: keyword,
     type: type,
   };
-  console.log(recipeName);
+  infoLog("SEARCH_02", recipeName);
 
   try {
     const response = await fetch(`${API_URL}/search/getIngredientSearchList`, {
@@ -43,9 +61,10 @@ export async function SearchIngredientAPI(keyword: string, type: string) {
     });
 
     const responseData = await response.json();
+    successLog("SEARCH_02", response.status, responseData);
     return responseData.search_list;
   } catch (error) {
-    console.error("RECIPE_02 Error:", error);
-    return "재료로 레시피 검색에 실패했습니다.";
+    errLog("SEARCH_02", error);
+    return [];
   }
 }

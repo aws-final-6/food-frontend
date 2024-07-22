@@ -7,6 +7,7 @@ import SearchButton from "@/components/Refrigerator/SearchButton";
 import AddRefrigButton from "@/components/Refrigerator/AddRefrigButton";
 import AddFoodButton from "@/components/Refrigerator/AddFoodButton";
 import { useRefrigeratorContext } from "./provider";
+import { useRouter } from "next/navigation";
 
 export interface IIngredients {
   refrigerator_ing_name: string;
@@ -36,16 +37,20 @@ export interface IColumn {
 const Page: React.FC = () => {
   const { userData } = useContext(UserContext);
   const { refrig, setRefrig } = useRefrigeratorContext();
+  const router = useRouter();
 
   useEffect(() => {
     async function fetchRefrigerators() {
-      if (userData && userData.length > 0) {
-        const data = await getRefrigerator(userData[0].id);
+      if (userData && userData.nickname) {
+        const data = await getRefrigerator(userData.id, userData.accessToken);
         setRefrig(data);
-        console.log(data);
       }
     }
-    fetchRefrigerators();
+    if (!userData || !userData.nickname) {
+      router.push("/");
+    } else {
+      fetchRefrigerators();
+    }
   }, [userData]);
 
   if (!refrig) {
