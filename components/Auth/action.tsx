@@ -62,7 +62,7 @@ export async function LoginAPI(provider: string, userAgent: any) {
     user_agent: userAgent,
   };
 
-  infoLog("AUTH_02", loginInfo);
+  infoLog("AUTH_02", loginInfo, "", { url: `${API_URL}/auth/requestToken` });
 
   try {
     const response = await fetch(`${API_URL}/auth/requestToken`, {

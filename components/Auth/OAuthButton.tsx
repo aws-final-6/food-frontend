@@ -36,9 +36,11 @@ const OAuthButton = () => {
     };
     fetchData();
   }, []);
-  async function handleLoginButton(provider: string, userAgent: any) {
-    const data = await LoginAPI(provider, userAgent);
 
+  async function handleLoginButton(provider: string, userAgent: any) {
+    console.log("provider", provider);
+    const data = await LoginAPI(provider, userAgent);
+    console.log("backend url", data);
     router.push(data);
   }
   return (
