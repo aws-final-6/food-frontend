@@ -8,13 +8,13 @@ import { UserContext } from "@/providers/userProvider";
 import { usePathname } from "next/navigation";
 
 const NavMobileMenu = () => {
-  const { isUserDataEmpty } = useContext(UserContext);
+  const { userData } = useContext(UserContext);
   const pathname = usePathname();
   const [navMobileMenu, setNavMobileMenu] = useState(
     siteConfig.mobilebasicItems
   );
   useEffect(() => {
-    if (!isUserDataEmpty()) {
+    if (userData && userData.nickname) {
       setNavMobileMenu(siteConfig.mobileuserItems);
     }
   }, []);

@@ -28,7 +28,7 @@ const AddRefrigButton = () => {
     const formdata = new FormData(event.currentTarget);
     formdata.append("refrig_type", rType);
     formdata.append("refrig_name", rName);
-    formdata.append("user_id", userData[0].id);
+    if (userData) formdata.append("user_id", userData.id);
     const res = await addRefrigerator(formdata);
     setRefrig(res);
   }

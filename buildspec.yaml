@@ -8,7 +8,10 @@ phases:
 
   pre_build:
     commands:
-      - echo Setting up
+      - echo Setting up yq...
+      - wget -qO ~/yq https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64
+      - chmod +x ~/yq
+      - ~/yq --version
 
   build:
     commands:
@@ -22,12 +25,28 @@ phases:
       - echo Tagging the Docker image...
       - docker tag ${ECR_REGISTRY}/mylittlerecipebook/mlr-prd-fe-img:${CODEBUILD_BUILD_NUMBER} ${ECR_REGISTRY}/mylittlerecipebook/mlr-prd-fe-img:latest
       - echo "Docker image tagged"
+      - echo Saving the Docker image as a .tar.gz file...
+      - docker save ${ECR_REGISTRY}/mylittlerecipebook/mlr-prd-fe-img:${CODEBUILD_BUILD_NUMBER} | gzip > mylittlerecipebook_img_${CODEBUILD_BUILD_NUMBER}.tar.gz
+      - echo Uploading the .tar.gz file to S3...
+      - aws s3 cp mylittlerecipebook_img_${CODEBUILD_BUILD_NUMBER}.tar.gz s3://${S3_BUCKET_NAME}/mylittlerecipebook_img_${CODEBUILD_BUILD_NUMBER}.tar.gz
+      - echo "Upload to S3 completed"
       - echo Pushing the Docker image to Seoul region ECR...
       - docker push ${ECR_REGISTRY}/mylittlerecipebook/mlr-prd-fe-img:${CODEBUILD_BUILD_NUMBER}
       - docker push ${ECR_REGISTRY}/mylittlerecipebook/mlr-prd-fe-img:latest
       - echo "Docker push completed"
-      
+      - echo Updating fe_deployment.yaml with the new image...
+      - git clone https://x-access-token:${TOKEN_GITHUB}@github.com/aws-final-6/GitOps_Repo.git
+      - cd GitOps_Repo
+      - ~/yq -i '.spec.template.spec.containers[0].image = strenv(ECR_REGISTRY) + "/mylittlerecipebook/mlr-prd-fe-img:" + strenv(CODEBUILD_BUILD_NUMBER)' fe_deployment.yaml
+      - echo Configuring git user...
+      - git config --global user.email "${EMAIL_GITHUB}"
+      - git config --global user.name "${USERNAME_GITHUB}"
+      - echo Committing and pushing changes...
+      - git add fe_deployment.yaml
+      - git commit -m "Update image to ${ECR_REGISTRY}/mylittlerecipebook/mlr-prd-fe-img:${CODEBUILD_BUILD_NUMBER}"
+      - git push https://x-access-token:${TOKEN_GITHUB}@github.com/aws-final-6/GitOps_Repo.git
+
 artifacts:
   files:
-    - '**/*'
+    - "**/*"
   discard-paths: yes

@@ -68,9 +68,10 @@ const OcrNaverButton = (onClose: any) => {
       refrigerator_ing_id: Math.random(), // Use a unique ID generator in a real app
       refrigerator_id: parseInt(ingredient.colname, 10),
     }));
-    const newData = await addNote(userData[0].id, newIngredients);
-    setRefrig(newData);
-    console.log(newIngredients);
+    if (userData) {
+      const newData = await addNote(userData.id, newIngredients);
+      setRefrig(newData);
+    }
   }
 
   function handleIngredientChange(index: number, field: string, value: string) {
