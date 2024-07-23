@@ -73,9 +73,11 @@ export async function LoginAPI(provider: string, userAgent: any) {
       },
     });
 
-    const responseData = await response.text();
+    const responseData = await response.json();
+    console.log("test", responseData);
     successLog("AUTH_02", response.status, responseData);
-    return responseData;
+    console.log("url", typeof responseData);
+    return responseData.url;
   } catch (error) {
     errLog("AUTH_02", error);
     return "/login";
