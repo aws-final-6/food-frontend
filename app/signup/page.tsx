@@ -158,9 +158,7 @@ const SignUppage = () => {
               onChange={() => setSubscribe(!subscribe)}
               isSelected={subscribe}
             >
-              <p className="text-sm">
-                최신 레시피 정보를 이메일 또는 카카오톡으로 받겠습니다.
-              </p>
+              <p className="text-sm">최신 레시피 정보를 이메일로 받겠습니다.</p>
             </Checkbox>
             <Button
               className="bg-subdark w-1/4 text-white"
