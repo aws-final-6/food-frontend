@@ -56,7 +56,7 @@ on:
 #        cd GitOps_Repo
 #        git config --global user.name "${{ secrets.USERNAME_GITHUB }}"
          
-    - name: Commit and push changes
+    - name: Commit and push changes.
       env:
         GITHUB_TOKEN: ${{ secrets.TOKEN_GITHUB }}
       run: |
