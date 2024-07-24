@@ -85,6 +85,12 @@ const NutritionInfo: React.FC<NutritionInfoProps> = ({ ingredients }) => {
   if (!nutritionData) {
     return (
       <div>
+        <Image
+          src="/aigif.gif"
+          alt="bedrock loading"
+          width={200}
+          height={200}
+        />
         <p>영양 정보를 불러오는 중...</p>
       </div>
     );
