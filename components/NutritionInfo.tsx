@@ -5,6 +5,7 @@ import { getNutrition } from "@/app/recipe/[id]/action";
 import { IIngredient } from "@/app/recipe/[id]/page";
 import { Card, CardBody } from "@nextui-org/card";
 import { Tooltip } from "@nextui-org/tooltip";
+import Image from "next/image";
 
 const parseIngredients = (ingredients: IIngredient[]) => {
   return ingredients.map((item: IIngredient) => {
@@ -82,7 +83,17 @@ const NutritionInfo: React.FC<NutritionInfoProps> = ({ ingredients }) => {
   }, [ingredients]);
 
   if (!nutritionData) {
-    return <div>영양 정보를 불러오는 중...</div>;
+    return (
+      <div>
+        <Image
+          src="/aigif.gif"
+          alt="bedrock loading"
+          width={200}
+          height={200}
+        />
+        <p>영양 정보를 불러오는 중...</p>
+      </div>
+    );
   }
 
   return (
