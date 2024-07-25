@@ -41,7 +41,7 @@ const MyPageBookmark = ({ callPosition }: ILog) => {
     fetchData();
   }, [userData]);
   if (loading) {
-    return <div className="p-4 text-center">Loading...</div>;
+    return <div className="p-4 text-center min-h-[600px]">Loading...</div>;
   }
 
   return (

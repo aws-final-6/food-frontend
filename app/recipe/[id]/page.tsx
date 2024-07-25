@@ -112,7 +112,10 @@ const RecipePage = ({ params }: { params: { id: number } }) => {
       </Card>
       <div className="fixed bottom-20 right-20 flex flex-col gap-3 items-start justify-center z-30 w-40">
         <Timer />
-        <ShoppingButton ingredients={data.recipeIngredient} />
+        <ShoppingButton
+          ingredients={data.recipeIngredient}
+          recipe_id={recipe_id}
+        />
         {userData && userData.nickname ? (
           <BookmarkButton callPosition="recipePage" />
         ) : (
