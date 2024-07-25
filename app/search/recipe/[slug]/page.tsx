@@ -27,7 +27,11 @@ const Page = ({ params }: { params: { slug: string } }) => {
   }, [keyword]);
 
   if (isLoading) {
-    return <div>Loading...</div>;
+    return <div className="min-h-[600px]">Loading...</div>;
+  }
+
+  if (!data) {
+    return <div className="min-h-[600px]">레시피가 없네요 ㅠㅠ </div>;
   }
 
   return (
