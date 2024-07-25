@@ -12,30 +12,38 @@ import { Tabs, Tab } from "@nextui-org/tabs";
 import React, { useState, useEffect } from "react";
 import { FaShoppingCart } from "react-icons/fa";
 import { getShoppingList } from "./action";
+import ShoppingCard from "./ShoppingCard";
 import Image from "next/image";
-import { useRouter } from "next/navigation";
 
 interface IIngredient {
   ingredient: string;
   amount: string;
 }
 
-const ShoppingButton = ({ ingredients }: any) => {
+interface IShopping {
+  ingredients: IIngredient[];
+  recipe_id: number;
+}
+
+const ShoppingButton = ({ ingredients, recipe_id }: IShopping) => {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const [shoppingList, setShoppingList] = useState([]);
   const startName = `${ingredients[0].ingredient}-0`;
   const [ingName, setIngName] = useState(startName);
-  const router = useRouter();
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchData = async () => {
+      console.log(isOpen);
       const name = ingName.slice(0, -2);
-
-      const data = await getShoppingList(name);
+      setLoading(true);
+      const data = await getShoppingList(name, recipe_id);
+      console.log(data, typeof data);
       setShoppingList(data);
+      setLoading(false);
     };
-    fetchData();
-  }, [ingName]);
+    if (isOpen) fetchData();
+  }, [isOpen, ingName]);
 
   return (
     <>
@@ -81,39 +89,29 @@ const ShoppingButton = ({ ingredients }: any) => {
                             {ing.ingredient}
                           </CardHeader>
                           <CardBody className="grid grid-cols-2 gap-4">
-                            {shoppingList.map((res: any, resIndex: number) => (
-                              <Card
-                                key={`${ing.ingredient}-${index}-res-${resIndex}-${res._id}`}
-                              >
-                                <CardHeader>{res.name}</CardHeader>
-                                <CardBody className="flex flex-col justify-center items-center">
-                                  <Image
-                                    src={res.image_url}
-                                    width={200}
-                                    height={200}
-                                    alt={res.name}
-                                  />
-                                  <p>{res.channel_name}</p>
-                                  {res.discountedRatio == 0 ? (
-                                    <p>{res.dispSalePrice}원</p>
-                                  ) : (
-                                    <div>
-                                      <p>{res.discountedRatio}% 할인</p>
-                                      <p>{res.discountedPrice}</p>
-                                    </div>
-                                  )}
-                                  <Button
-                                    onClick={() => {
-                                      router.push(
-                                        `https://shopping.naver.com/window-products/${res.channel_name}/${res._id}`
-                                      );
-                                    }}
-                                  >
-                                    구매하기
-                                  </Button>
-                                </CardBody>
-                              </Card>
-                            ))}
+                            {loading ? (
+                              <Image
+                                src="/shoppingcart.gif"
+                                alt="장보기 리스트 가져오는 중"
+                                width={200}
+                                height={200}
+                              />
+                            ) : (
+                              shoppingList.map((res: any, resIndex: number) => (
+                                <ShoppingCard
+                                  ingredient_name={ing.ingredient}
+                                  ingredient_index={index}
+                                  item_index={resIndex}
+                                  item_id={res._id}
+                                  item_image_url={res.image_url}
+                                  item_name={res.name}
+                                  item_channel_name={res.channel_name}
+                                  item_discounted_ratio={res.discountedRatio}
+                                  item_disp_sale_price={res.dispSalePrice}
+                                  item_discounted_price={res.discountedPrice}
+                                />
+                              ))
+                            )}
                           </CardBody>
                         </Card>
                       </Tab>

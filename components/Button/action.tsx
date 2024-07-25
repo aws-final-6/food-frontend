@@ -45,11 +45,14 @@ export async function getNaverShoppingList(ingredientName: string) {
  * 네이버 쇼핑  API를 통해서 데이터 가져오기
  */
 
-export async function getShoppingList(ingredientName: string) {
+export async function getShoppingList(
+  ingredientName: string,
+  recipeId: number
+) {
   const ingredientInfo = {
     ingredient_name: ingredientName,
   };
-  infoLog("RECIPE_08", ingredientInfo);
+  infoLog("RECIPE_08", ingredientInfo, "", { recipe_id: recipeId });
 
   try {
     const response = await fetch(`${API_URL}/recipe/getShop`, {
