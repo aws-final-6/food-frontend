@@ -1,5 +1,5 @@
+"use client";
 import React, { useContext } from "react";
-import FavoriteButton from "../Bookmark/FavoriteButton";
 import Link from "next/link";
 import { Card, CardBody, CardFooter } from "@nextui-org/card";
 import Image from "next/image";
@@ -20,7 +20,6 @@ interface ICard {
   food: IFood;
 }
 const FoodCard = ({ cName, index, food }: ICard) => {
-  const { userData } = useContext(UserContext);
   return (
     <Link
       href={`/recipe/${food.recipe_id}`}
@@ -28,7 +27,7 @@ const FoodCard = ({ cName, index, food }: ICard) => {
     >
       <Card
         key={`${cName}_${food.recipe_id}_${index}`}
-        className="hover:border-3 hover:border-main border-3 cursor-pointer relative "
+        className="hover:border-3 hover:border-main border-3 cursor-pointer relative w-full "
         shadow="sm"
         isPressable={true}
         radius="none"
@@ -42,6 +41,7 @@ const FoodCard = ({ cName, index, food }: ICard) => {
               layout="responsive"
               width={200}
               height={200}
+              loading="lazy"
             />
           </div>
         </CardBody>

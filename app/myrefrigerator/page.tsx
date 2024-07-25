@@ -54,7 +54,7 @@ const Page: React.FC = () => {
   }, [userData]);
 
   if (!refrig) {
-    return <div>Loading...</div>;
+    return <div className="min-h-[600px]">Loading...</div>;
   }
 
   return (

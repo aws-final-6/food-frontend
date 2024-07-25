@@ -82,7 +82,7 @@ export default function MyPage() {
     }
   }
 
-  if (!data) return <div>Loading...</div>;
+  if (!data) return <div className="min-h-[600px]">Loading...</div>;
 
   return (
     <div>

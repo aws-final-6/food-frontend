@@ -114,15 +114,26 @@ const OcrNaverButton = (onClose: any) => {
           type="file"
           accept="image/*"
           onChange={handleFileChange}
+          disabled={loading}
           className="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-violet-50 file:text-violet-700 hover:file:bg-violet-100"
         />
+        {loading ? (
+          <Image
+            src="/ocrgif.gif"
+            alt="bedrock loading"
+            width={200}
+            height={200}
+          />
+        ) : (
+          <></>
+        )}
         <Button
           onClick={handleClick}
           variant="flat"
           color="primary"
           disabled={loading}
         >
-          {loading ? "로딩 중..." : "텍스트 추출하기"}
+          텍스트 추출하기
         </Button>
       </div>
       {ingredients.length > 0 && (

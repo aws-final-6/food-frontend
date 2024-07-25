@@ -24,10 +24,13 @@ import { getMultiSearch } from "./action";
 import { Card, CardBody, CardHeader } from "@nextui-org/card";
 import RecipeButton from "../Recommend/RecipeButton";
 import Image from "next/image";
-interface IMeta {
+import FoodCard from "../Recommend/FoodCard";
+interface IRecipe {
   recipe_id: number;
   recipe_title: string;
   recipe_thumbnail: string;
+  cate_no: number;
+  situ_no: number;
 }
 const SearchButton = () => {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
@@ -37,7 +40,7 @@ const SearchButton = () => {
   const [selectedIngredients, setSelectedIngredients] = useState<Set<string>>(
     new Set()
   );
-  const [searchResults, setSearchResults] = useState<IMeta[]>([]);
+  const [searchResults, setSearchResults] = useState<IRecipe[]>([]);
   const [isResultModalOpen, setIsResultModalOpen] = useState(false);
 
   function handleSelectionChange(selected: Set<string>) {
@@ -150,23 +153,24 @@ const SearchButton = () => {
                 ) : (
                   <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 p-4">
                     {searchResults.map((food, i) => (
-                      <Card key={i} className="py-4" isPressable>
-                        <CardHeader className="pb-0 pt-2 px-4 flex-col">
-                          <h4 className="font-bold text-large">
-                            {food.recipe_title}
-                          </h4>
-                        </CardHeader>
-                        <CardBody className="overflow-visible py-2 flex items-center">
-                          <Image
-                            alt={food.recipe_title}
-                            className="object-cover rounded-xl"
-                            src={food.recipe_thumbnail}
-                            width={200}
-                            height={200}
-                          />
-                        </CardBody>
-                        <RecipeButton recipe_no={food.recipe_id} />
-                      </Card>
+                      <FoodCard cName="refrigSearch" index={i} food={food} />
+                      // <Card key={i} className="py-4" isPressable>
+                      //   <CardHeader className="pb-0 pt-2 px-4 flex-col">
+                      //     <h4 className="font-bold text-large">
+                      //       {food.recipe_title}
+                      //     </h4>
+                      //   </CardHeader>
+                      //   <CardBody className="overflow-visible py-2 flex items-center">
+                      //     <Image
+                      //       alt={food.recipe_title}
+                      //       className="object-cover rounded-xl"
+                      //       src={food.recipe_thumbnail}
+                      //       width={200}
+                      //       height={200}
+                      //     />
+                      //   </CardBody>
+                      //   <RecipeButton recipe_no={food.recipe_id} />
+                      // </Card>
                     ))}
                   </div>
                 )}
