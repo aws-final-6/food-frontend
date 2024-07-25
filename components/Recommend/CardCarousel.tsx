@@ -44,16 +44,22 @@ const CardCarousel: React.FC<CarouselProps> = ({ data, cName }) => {
       </button>
       <div className="overflow-hidden">
         <motion.div
-          className="flex flex-wrap md:flex-nowrap"
+          className="flex"
           animate={{ x: `${-current * 100}%` }}
           transition={{ type: "tween", ease: "easeInOut", duration: 0.5 }}
         >
-          {data.map((food, index) => (
+          {Array.from({ length: totalPages }, (_, pageIndex) => (
             <div
-              key={food.recipe_id}
-              className="w-1/2 md:w-1/4 p-2 flex-shrink-0"
+              key={pageIndex}
+              className="w-full flex-shrink-0 flex flex-wrap"
             >
-              <FoodCard cName={cName} index={index} food={food} />
+              {data
+                .slice(pageIndex * cardsPerPage, (pageIndex + 1) * cardsPerPage)
+                .map((food, index) => (
+                  <div key={food.recipe_id} className="w-1/2 sm:w-1/4 p-2">
+                    <FoodCard cName={cName} index={index} food={food} />
+                  </div>
+                ))}
             </div>
           ))}
         </motion.div>

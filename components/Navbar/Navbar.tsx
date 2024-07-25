@@ -12,6 +12,7 @@ import LoginButton from "./LoginButton";
 import { ThemeSwitch } from "./ThemeSwitch";
 import Searchbar from "./Searchbar";
 import NavMobileMenu from "./NavMobileMenu";
+import SearchMobile from "./SearchMobile";
 
 const Navbar = () => {
   return (
@@ -23,11 +24,12 @@ const Navbar = () => {
         </NavbarContent>
         <NavbarContent justify="end" className="hidden lg:flex">
           <Searchbar />
-          <ThemeSwitch />
+          {/* <ThemeSwitch /> */}
           <LoginButton />
         </NavbarContent>
         <NavbarContent className="sm:hidden basis-1 pl-4" justify="end">
-          <ThemeSwitch />
+          {/* <ThemeSwitch /> */}
+          <SearchMobile />
           <NavbarMenuToggle />
         </NavbarContent>
         <NavbarMenu>
