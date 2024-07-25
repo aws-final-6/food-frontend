@@ -1,6 +1,6 @@
 "use client";
 import { Input } from "@nextui-org/input";
-import React, { useState } from "react";
+import React, { Key, useEffect, useState } from "react";
 import { Listbox, ListboxItem, ListboxSection } from "@nextui-org/listbox";
 import { Switch } from "@nextui-org/switch";
 import { BiSolidFoodMenu } from "react-icons/bi";
@@ -9,6 +9,9 @@ import { SearchIngredientAPI, SearchRecipeAPI } from "./action";
 import { Button } from "@nextui-org/button";
 import { useRouter } from "next/navigation";
 import FilterButton from "./FilterButton";
+import { Autocomplete, AutocompleteItem } from "@nextui-org/autocomplete";
+import Link from "next/link";
+import useDebounce from "@/utils/UseDebounce";
 
 interface SearchResult {
   recipe_id: number;
@@ -21,15 +24,13 @@ const Searchbar = () => {
   const [results, setResults] = useState<SearchResult[]>([]);
   const [searchType, setSearchType] = useState(false);
   const router = useRouter();
+  const debouncedSearchTerm = useDebounce(searchTerm, 500);
 
-  async function handleSearch(e: React.ChangeEvent<HTMLInputElement>) {
-    const value = e.target.value;
-
-    setSearchTerm(value);
+  async function handleSearch(value: string) {
     let searchResult;
     if (value.length > 1) {
       if (searchType) searchResult = await SearchRecipeAPI(value, "navbar");
-      if (searchType === false)
+      if (!searchType)
         searchResult = await SearchIngredientAPI(value, "navbar");
       if (searchResult && searchResult.length >= 5)
         setResults(searchResult.slice(0, 5));
@@ -39,26 +40,18 @@ const Searchbar = () => {
     }
   }
 
-  async function handleSwitch() {
-    setSearchType(!searchType);
-    let searchResult;
-    if (searchTerm.length > 1) {
-      if (searchType === false)
-        searchResult = await SearchRecipeAPI(searchTerm, "navbar");
-      if (searchType)
-        searchResult = await SearchIngredientAPI(searchTerm, "navbar");
-      if (searchResult && searchResult.length >= 5)
-        setResults(searchResult.slice(0, 5));
-      else setResults(searchResult);
-    } else {
-      setResults([]);
-    }
-  }
+  useEffect(() => {
+    handleSearch(debouncedSearchTerm);
+  }, [debouncedSearchTerm, searchType]);
+
   return (
-    <div className="flex flex-row gap-1">
+    <div className="flex flex-row gap-1 items-center justify-center">
       <Switch
         isSelected={searchType}
-        onChange={handleSwitch}
+        onChange={() => {
+          setSearchType(!searchType);
+          setSearchTerm("");
+        }}
         size="lg"
         color="warning"
         startContent={<BiSolidFoodMenu />}
@@ -67,66 +60,38 @@ const Searchbar = () => {
           wrapper: "bg-main",
         }}
       />
+      <Autocomplete
+        label={searchType ? "레시피 이름" : "재료"}
+        inputValue={searchTerm}
+        allowsCustomValue
+        onInputChange={(value) => setSearchTerm(value)}
+        variant="underlined"
+      >
+        {results &&
+          results.map((result, index) => (
+            <AutocompleteItem
+              key={`res_${result.recipe_id}_${index}`}
+              value={result.recipe_id}
+            >
+              {result.recipe_title || ""}
+            </AutocompleteItem>
+          ))}
+      </Autocomplete>
 
-      <Input
-        aria-label="Search"
-        classNames={{
-          inputWrapper: "bg-default-100",
-          input: "text-sm",
-        }}
-        labelPlacement="outside"
-        placeholder={searchType ? "레시피 검색하기.." : "재료 검색하기.."}
-        type="search"
-        onChange={handleSearch}
-        value={searchTerm}
-      />
       <Button
-        variant="flat"
-        color="primary"
+        className="bg-sub font-jua"
         onClick={() => {
+          setResults([]);
           searchType
             ? router.push(`/search/recipe/${searchTerm}`)
             : router.push(`/search/ingredient/${searchTerm}`);
           setSearchTerm("");
-          setResults([]);
         }}
         disabled={searchTerm.length <= 1}
       >
         검색
       </Button>
       <FilterButton />
-
-      {results && results.length > 0 && (
-        <div className="absolute z-10 w-[300px] bg-white shadow-lg mt-10 ml-12 rounded-lg border-2 border-subdark">
-          <Listbox
-            classNames={{
-              base: "max-w-xs",
-              list: "max-h-[300px] overflow-scroll",
-            }}
-          >
-            <ListboxSection
-              title={searchType ? "레시피 이름" : "재료"}
-              classNames={{ heading: "text-lg" }}
-              showDivider
-            >
-              {results.map((result) => (
-                <ListboxItem
-                  key={result.recipe_id}
-                  className="p-4 border-b last:border-b-0"
-                  onClick={() => {
-                    router.push(`/recipe/${result.recipe_id}`);
-                    setResults([]);
-                  }}
-                >
-                  <div className="font-bold text-wrap">
-                    {result.recipe_title || ""}
-                  </div>
-                </ListboxItem>
-              ))}
-            </ListboxSection>
-          </Listbox>
-        </div>
-      )}
     </div>
   );
 };
