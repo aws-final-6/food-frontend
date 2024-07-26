@@ -222,9 +222,9 @@ export async function getVideoList() {
       return [];
     }
 
-    const videoList = await response.json();
-
-    successLog("YOUTUBE_01", response.status, videoList);
+    const res = await response.json();
+    const videoList = JSON.parse(res.body);
+    successLog("YOUTUBE_01", response.status, res);
 
     return getRandomItems(videoList, 3);
   } catch (error) {
@@ -250,8 +250,9 @@ export async function getShortsList() {
       return [];
     }
 
-    const videoList = await response.json();
-    successLog("YOUTUBE_02", response.status, videoList);
+    const res = await response.json();
+    const videoList = JSON.parse(res.body);
+    successLog("YOUTUBE_02", response.status, res);
 
     return getRandomItems(videoList, 3);
   } catch (error) {
