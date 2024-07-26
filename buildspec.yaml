@@ -8,7 +8,7 @@ phases:
 
   pre_build:
     commands:
-      - echo Setting up yq...
+      - echo Setting up yq....
       - wget -qO ~/yq https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64
       - chmod +x ~/yq
       - ~/yq --version
