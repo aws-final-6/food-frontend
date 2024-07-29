@@ -12,7 +12,7 @@ const Footer = () => {
           </p>
           <p className="font-bold">사업적 목적이 없음을 알립니다.</p>
           <p>
-            또한 각 레시피의 저작권은 만개의 레피시와 개인에게 있음을 알립니다.
+            또한 각 레시피의 저작권은 만개의 레시피와 개인에게 있음을 알립니다.
           </p>
         </div>
 
@@ -42,7 +42,7 @@ const Footer = () => {
                 href="https://awscloudschool.online/"
                 className="text-white hover:text-orange-500 transition duration-300"
               >
-                DpPanDa
+                DAPANDA
               </Link>
             </li>
             <li>
