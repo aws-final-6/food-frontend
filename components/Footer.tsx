@@ -42,7 +42,7 @@ const Footer = () => {
                 href="https://awscloudschool.online/"
                 className="text-white hover:text-orange-500 transition duration-300"
               >
-                DpPanDa
+                DAPANDA
               </Link>
             </li>
             <li>
