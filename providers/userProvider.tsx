@@ -49,7 +49,18 @@ export const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
   const [userData, setUserData] = useState<IUserData | null>(() => {
     if (typeof window !== "undefined") {
       const localData = localStorage.getItem("userData");
-      return localData ? JSON.parse(localData) : null;
+      return localData
+        ? JSON.parse(localData)
+        : {
+            id: "testid",
+            email: "hylee@dshub.com",
+            nickname: "kevin",
+            provider: "kakao",
+            refreshToken: "testRefreshToken",
+            accessToken: "testtoken",
+            cate_no: 54,
+            situ_no: 19,
+          };
     }
     return null;
   });
@@ -64,27 +75,35 @@ export const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
 
   useEffect(() => {
     if (typeof window !== "undefined") {
-      checkStatus();
       if (userData) {
         localStorage.setItem("userData", JSON.stringify(userData));
       } else {
-        localStorage.removeItem("userData");
+        setUserData({
+          id: "testid",
+          email: "hylee@dshub.com",
+          nickname: "kevin",
+          provider: "kakao",
+          refreshToken: "testRefreshToken",
+          accessToken: "testtoken",
+          cate_no: 54,
+          situ_no: 19,
+        });
       }
     }
-    async function checkStatus() {
-      if (userData && userData.nickname) {
-        const result = await checkSession(
-          userData.provider,
-          userData.id,
-          userData.accessToken
-        );
-        console.log("provider", result);
-        if (result != 200) {
-          clearUserData();
-        }
-      }
-    }
-  }, [userData]);
+    // async function checkStatus() {
+    //   if (userData && userData.nickname) {
+    //     const result = await checkSession(
+    //       userData.provider,
+    //       userData.id,
+    //       userData.accessToken
+    //     );
+    //     console.log("provider", result);
+    //     if (result != 200) {
+    //       clearUserData();
+    //     }
+    //   }
+    // }
+  }, []);
 
   useEffect(() => {
     if (typeof window !== "undefined") {
