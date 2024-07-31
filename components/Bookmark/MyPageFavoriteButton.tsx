@@ -26,7 +26,13 @@ const MyPageFavoriteButton: React.FC<BookmarkButtonProps> = ({
 
   useEffect(() => {
     if (userData?.nickname && favorite) {
-      setStar(favorite.includes(Number(recipeId)));
+      if (favorite.includes(Number(recipeId))) {
+        setStar(true);
+      } else {
+        setBookmarks((prevBookmarks) =>
+          prevBookmarks.filter((bookmark) => bookmark.recipe_id !== recipeId)
+        );
+      }
     }
   }, [userData, favorite, recipeId]);
 

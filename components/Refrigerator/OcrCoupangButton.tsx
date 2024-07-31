@@ -196,6 +196,7 @@ const OcrCoupangButton = () => {
         className="w-1/2"
         variant="flat"
         color="secondary"
+        isDisabled={file === undefined}
       >
         저장하기
       </Button>

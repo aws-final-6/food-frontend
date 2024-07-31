@@ -22,7 +22,7 @@ const Navbar = () => {
           <NavLogo />
           <NavWebMenu />
         </NavbarContent>
-        <NavbarContent justify="end" className="hidden lg:flex">
+        <NavbarContent justify="end" className="hidden md:flex">
           <Searchbar />
           {/* <ThemeSwitch /> */}
           <LoginButton />

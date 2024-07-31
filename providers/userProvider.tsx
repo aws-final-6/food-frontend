@@ -78,7 +78,6 @@ export const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
           userData.id,
           userData.accessToken
         );
-        console.log("provider", result);
         if (result != 200) {
           clearUserData();
         }
