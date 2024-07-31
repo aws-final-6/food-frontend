@@ -59,7 +59,7 @@ const SearchButton = () => {
   return (
     <div>
       <Button
-        className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full shadow-lg focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-75 transition ease-in-out duration-300"
+        className="bg-sub text-gray-700 font-bold py-2 px-4 rounded-full shadow-lg focus:outline-none focus:ring-2 focus:ring-yellow-200 focus:ring-opacity-75 transition ease-in-out duration-300"
         onPress={onOpen}
       >
         <FaSearch /> 검색
