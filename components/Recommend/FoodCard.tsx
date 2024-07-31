@@ -27,7 +27,6 @@ const FoodCard = ({ cName, index, food }: ICard) => {
       key={`${cName}_${food.recipe_id}_${index}`}
       className="hover:border-3 hover:border-main border-3 cursor-pointer relative w-full "
       shadow="sm"
-      isPressable={true}
       radius="none"
     >
       <CardBody className="overflow-visible p-0">
@@ -44,6 +43,7 @@ const FoodCard = ({ cName, index, food }: ICard) => {
           <Link
             href={`/recipe/${food.recipe_id}`}
             key={`${cName}_card_${food.recipe_id}`}
+            className=" cursor-pointer"
           >
             <Image
               alt={food.recipe_title}
@@ -57,15 +57,21 @@ const FoodCard = ({ cName, index, food }: ICard) => {
           </Link>
         </div>
       </CardBody>
-      <CardFooter className="flex flex-col justify-center items-center gap-3 px-2 min-h-[100px]">
-        <div className="hidden absolute z-30 sm:flex sm:flex-row gap-2 top-1/2 left-0 px-2">
-          <Chip className="bg-main">{getCateLabel(food.cate_no)}</Chip>
-          <Chip className="bg-sub">{getSituLabel(food.situ_no)}</Chip>
-        </div>
-        <h4 className="font-bold sm:text-large text-center">
-          {food.recipe_title}
-        </h4>
-      </CardFooter>
+      <Link
+        href={`/recipe/${food.recipe_id}`}
+        key={`${cName}_card_${food.recipe_id}`}
+        className=" cursor-pointer"
+      >
+        <CardFooter className="flex flex-col justify-center items-center gap-3 px-2 min-h-[100px]">
+          <div className="hidden absolute z-30 sm:flex sm:flex-row gap-2 top-1/2 left-0 px-2">
+            <Chip className="bg-main">{getCateLabel(food.cate_no)}</Chip>
+            <Chip className="bg-sub">{getSituLabel(food.situ_no)}</Chip>
+          </div>
+          <h4 className="font-bold sm:text-large text-center">
+            {food.recipe_title}
+          </h4>
+        </CardFooter>
+      </Link>
     </Card>
   );
 };

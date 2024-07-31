@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Button } from "@nextui-org/button";
 import { ImStopwatch } from "react-icons/im";
 import { Card, CardBody, CardFooter } from "@nextui-org/card";
@@ -17,7 +17,19 @@ const useTimer = (initialState: number) => {
   const [timer, setTimer] = React.useState(initialState);
   const [isActive, setIsActive] = React.useState(false);
   const [isPaused, setIsPaused] = React.useState(false);
+  const [isAlarmPlaying, setIsAlarmPlaying] = React.useState(false);
   const countRef = React.useRef<NodeJS.Timeout | null>(null);
+  const audioRef = React.useRef<HTMLAudioElement | null>(null);
+
+  useEffect(() => {
+    audioRef.current = new Audio("/alarm.mp3");
+    return () => {
+      if (audioRef.current) {
+        audioRef.current.pause();
+        audioRef.current = null;
+      }
+    };
+  }, []);
 
   const handleStart = () => {
     setIsActive(true);
@@ -26,6 +38,7 @@ const useTimer = (initialState: number) => {
       setTimer((prevTimer) => {
         if (prevTimer <= 0) {
           clearInterval(countRef.current as NodeJS.Timeout);
+          playAlarm();
           return 0;
         }
         return prevTimer - 1;
@@ -46,6 +59,7 @@ const useTimer = (initialState: number) => {
       setTimer((prevTimer) => {
         if (prevTimer <= 0) {
           clearInterval(countRef.current as NodeJS.Timeout);
+          playAlarm();
           return 0;
         }
         return prevTimer - 1;
@@ -60,6 +74,23 @@ const useTimer = (initialState: number) => {
     setIsActive(false);
     setIsPaused(false);
     setTimer(0);
+    stopAlarm();
+  };
+
+  const playAlarm = () => {
+    if (audioRef.current) {
+      audioRef.current.loop = true;
+      audioRef.current.play();
+      setIsAlarmPlaying(true);
+    }
+  };
+
+  const stopAlarm = () => {
+    if (audioRef.current) {
+      audioRef.current.pause();
+      audioRef.current.currentTime = 0;
+    }
+    setIsAlarmPlaying(false);
   };
 
   const updateTimer = (newTime: number) => {
@@ -70,11 +101,13 @@ const useTimer = (initialState: number) => {
     timer,
     isActive,
     isPaused,
+    isAlarmPlaying,
     handleStart,
     handlePause,
     handleResume,
     handleReset,
     updateTimer,
+    stopAlarm,
   };
 };
 
@@ -85,17 +118,25 @@ const Timer = () => {
     timer,
     isActive,
     isPaused,
+    isAlarmPlaying,
     handleStart,
     handlePause,
     handleResume,
     handleReset,
     updateTimer,
+    stopAlarm,
   } = useTimer(time);
 
   const handleUpdateTime = (increment: number) => {
     const newTime = Math.max(time + increment, 0);
     setTime(newTime);
     updateTimer(newTime);
+  };
+
+  const handleConfirm = () => {
+    stopAlarm();
+    handleReset();
+    setTime(0);
   };
 
   return (
@@ -133,7 +174,11 @@ const Timer = () => {
                   -5분
                 </Button>
               </div>
-              {!isActive && !isPaused ? (
+              {isAlarmPlaying ? (
+                <Button variant="ghost" color="primary" onClick={handleConfirm}>
+                  확인
+                </Button>
+              ) : !isActive && !isPaused ? (
                 <Button
                   variant="ghost"
                   color="primary"
